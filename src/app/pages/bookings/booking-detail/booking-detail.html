@@ -1,0 +1,52 @@
+<div class="max-w-2xl mx-auto px-4 py-8">
+  @if (loading) {
+    <div class="text-center py-12 text-gray-500">{{ 'bookings.loading' | translate }}</div>
+  } @else if (!booking) {
+    <div class="text-center py-12 text-gray-500">{{ 'bookings.notFound' | translate }}</div>
+  } @else {
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">{{ 'bookings.id' | translate }} #{{ booking.id }}</h1>
+        <span [class]="'px-3 py-1 text-sm font-medium rounded-full ' + getStatusColor(booking.status)">
+          {{ booking.status }}
+        </span>
+      </div>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <span class="text-sm text-gray-500">{{ 'bookings.field' | translate }}</span>
+            <p class="font-medium">{{ booking.field_name }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-500">{{ 'bookings.date' | translate }}</span>
+            <p class="font-medium">{{ booking.date }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-500">{{ 'bookings.horario' | translate }}</span>
+            <p class="font-medium">{{ booking.start_time }} - {{ booking.end_time }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-500">{{ 'bookings.total' | translate }}</span>
+            <p class="font-bold text-green-600 text-xl">${{ booking.total_price }}</p>
+          </div>
+        </div>
+
+        @if (booking.status !== 'CANCELLED' && booking.status !== 'COMPLETED') {
+          <div class="pt-4 border-t">
+            <button (click)="cancelBooking()" [disabled]="cancelling"
+                    class="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700 disabled:opacity-50 font-medium text-sm">
+              @if (cancelling) { {{ 'bookings.cancellingBooking' | translate }} } @else { {{ 'bookings.cancelBooking' | translate }} }
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="mt-6 pt-4 border-t">
+        <a routerLink="/my-bookings" class="text-green-600 hover:text-green-700 font-medium text-sm">
+          {{ 'bookings.backToBookings' | translate }}
+        </a>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,81 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">{{ 'admin.title' | translate }}</h1>
+    <a routerLink="/admin/fields/new"
+       class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 font-medium text-sm">
+      {{ 'admin.newField' | translate }}
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold text-gray-900">{{ 'admin.fields' | translate }}</h2>
+        <span class="text-sm text-gray-500">{{ fields.length }} {{ 'admin.total' | translate }}</span>
+      </div>
+      @if (fields.length === 0) {
+        <p class="text-gray-500">{{ 'admin.noFields' | translate }}</p>
+      } @else {
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'fields.name' | translate }}</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'fields.type' | translate }}</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'fields.pricePerHour' | translate }}</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'admin.actions' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              @for (field of fields; track field.id) {
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ field.name }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600">{{ field.field_type }} vs {{ field.field_type }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600">${{ field.price_per_hour }}/h</td>
+                  <td class="px-4 py-3 text-sm space-x-2">
+                    <a [routerLink]="['/admin/fields', field.id, 'edit']"
+                       class="text-blue-600 hover:text-blue-800">{{ 'admin.edit' | translate }}</a>
+                    <button (click)="deleteField(field.id)" class="text-red-600 hover:text-red-800">{{ 'admin.delete' | translate }}</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold text-gray-900">{{ 'admin.pendingBookings' | translate }}</h2>
+        <a routerLink="/admin/bookings" class="text-sm text-green-600 hover:text-green-700">{{ 'admin.viewAll' | translate }}</a>
+      </div>
+      @if (loading) {
+        <p class="text-gray-500">{{ 'common.loading' | translate }}</p>
+      } @else if (pendingBookings.length === 0) {
+        <p class="text-gray-500">{{ 'admin.noPending' | translate }}</p>
+      } @else {
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.field' | translate }}</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.date' | translate }}</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.horario' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              @for (b of pendingBookings; track b.id) {
+                <tr class="hover:bg-gray-50">
+                  <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ b.field_name }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600">{{ b.date }}</td>
+                  <td class="px-4 py-3 text-sm text-gray-600">{{ b.start_time }} - {{ b.end_time }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+<div class="max-w-2xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-gray-900 mb-6">
+    {{ isEdit ? ('fields.editField' | translate) : ('fields.newField' | translate) }}
+  </h1>
+
+  @if (error) {
+    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-md text-sm mb-4">{{ error | translate }}</div>
+  }
+
+  <form (ngSubmit)="onSubmit()" class="bg-white rounded-lg shadow p-6 space-y-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ 'fields.name' | translate }}</label>
+      <input type="text" [(ngModel)]="field.name" name="name" required
+             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ 'fields.type' | translate }}</label>
+        <select [(ngModel)]="field.field_type" name="field_type"
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+          @for (ft of fieldTypes; track ft.value) {
+            <option [ngValue]="ft.value">{{ ft.label }}</option>
+          }
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ 'fields.surface' | translate }}</label>
+        <select [(ngModel)]="field.surface" name="surface"
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+          @for (s of surfaces; track s.value) {
+            <option [ngValue]="s.value">{{ s.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ 'fields.pricePerHourCurrency' | translate }}</label>
+        <input type="number" [(ngModel)]="field.price_per_hour" name="price_per_hour" required min="0" step="0.01"
+               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" />
+      </div>
+      <div class="flex items-center pt-6">
+        <input type="checkbox" [(ngModel)]="field.is_active" name="is_active" id="is_active"
+               class="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500" />
+        <label for="is_active" class="ml-2 text-sm text-gray-700">{{ 'fields.activeField' | translate }}</label>
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ 'fields.description' | translate }}</label>
+      <textarea [(ngModel)]="field.description" name="description" rows="3"
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"></textarea>
+    </div>
+    <div class="flex gap-4 pt-4">
+      <button type="submit" [disabled]="loading"
+              class="bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700 disabled:opacity-50 font-medium">
+        @if (loading) { {{ 'fields.saving' | translate }} } @else { {{ isEdit ? ('fields.updateBtn' | translate) : ('fields.createBtn' | translate) }} }
+      </button>
+      <a routerLink="/admin"
+         class="border border-gray-300 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-50 font-medium">
+        {{ 'fields.cancelBtn' | translate }}
+      </a>
+    </div>
+  </form>
+</div>

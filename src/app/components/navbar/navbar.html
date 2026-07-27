@@ -1,0 +1,53 @@
+@if (i18n.translations()) {
+<nav class="bg-green-600 text-white shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a routerLink="/fields" class="text-xl font-bold tracking-tight hover:text-green-200 transition-colors">
+          SoccerDev
+        </a>
+        <div class="hidden md:flex items-center gap-4">
+          <a routerLink="/fields" routerLinkActive="bg-green-700" [routerLinkActiveOptions]="{exact: true}"
+             class="px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors">
+            {{ 'nav.fields' | translate }}
+          </a>
+          @if (authService.isAuthenticated()) {
+            <a routerLink="/my-bookings" routerLinkActive="bg-green-700"
+               class="px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors">
+              {{ 'nav.myBookings' | translate }}
+            </a>
+          }
+          @if (authService.isAdmin()) {
+            <a routerLink="/admin" routerLinkActive="bg-green-700"
+               class="px-3 py-2 rounded-md text-sm font-medium hover:bg-green-700 transition-colors">
+              {{ 'nav.admin' | translate }}
+            </a>
+          }
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <button (click)="i18n.toggleLang()"
+                class="px-3 py-1 rounded-md text-sm font-medium border border-white hover:bg-green-700 transition-colors">
+          {{ i18n.lang() === 'es' ? 'EN' : 'ES' }}
+        </button>
+        @if (authService.isAuthenticated()) {
+          <span class="text-sm text-green-200">{{ authService.currentUser()?.username }}</span>
+          <button (click)="logout()"
+                  class="px-4 py-2 rounded-md text-sm font-medium bg-green-700 hover:bg-green-800 transition-colors">
+            {{ 'nav.logout' | translate }}
+          </button>
+        } @else {
+          <a routerLink="/login"
+             class="px-4 py-2 rounded-md text-sm font-medium bg-white text-green-700 hover:bg-green-50 transition-colors">
+            {{ 'nav.login' | translate }}
+          </a>
+          <a routerLink="/register"
+             class="px-4 py-2 rounded-md text-sm font-medium border border-white text-white hover:bg-green-700 transition-colors">
+            {{ 'nav.register' | translate }}
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+</nav>
+}

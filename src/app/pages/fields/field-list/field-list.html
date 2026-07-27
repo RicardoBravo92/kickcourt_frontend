@@ -1,0 +1,93 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">{{ 'fields.title' | translate }}</h1>
+    <span class="text-sm text-gray-500">{{ totalCount }} {{ 'fields.totalResults' | translate }}</span>
+  </div>
+
+  <div class="bg-white rounded-lg shadow p-4 mb-6">
+    <div class="flex flex-wrap gap-4 items-end">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'fields.type' | translate }}</label>
+        <select [(ngModel)]="filters.field_type" (change)="applyFilters()"
+                class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
+          <option [ngValue]="undefined">{{ 'fields.all' | translate }}</option>
+          @for (ft of fieldTypes; track ft.value) {
+            <option [ngValue]="ft.value">{{ ft.label }}</option>
+          }
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'fields.surface' | translate }}</label>
+        <select [(ngModel)]="filters.surface" (change)="applyFilters()"
+                class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500">
+          <option [ngValue]="undefined">{{ 'fields.allF' | translate }}</option>
+          @for (s of surfaces; track s.value) {
+            <option [ngValue]="s.value">{{ s.label }}</option>
+          }
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'fields.name' | translate }}</label>
+        <input type="text" [(ngModel)]="filters.search" (keyup.enter)="applyFilters()"
+               [placeholder]="'fields.searchPlaceholder' | translate"
+               class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500 w-48" />
+      </div>
+      <button (click)="clearFilters()"
+              class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+        {{ 'fields.clear' | translate }}
+      </button>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-12 text-gray-500">{{ 'fields.loading' | translate }}</div>
+  } @else if (fields.length === 0) {
+    <div class="text-center py-12 text-gray-500">
+      <p class="text-lg mb-2">{{ 'fields.empty' | translate }}</p>
+      <button (click)="clearFilters()" class="text-green-600 hover:underline text-sm">
+        {{ 'fields.clearFilters' | translate }}
+      </button>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (field of fields; track field.id) {
+        <div class="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition-shadow flex flex-col">
+          @if (field.photo) {
+            <img [src]="field.photo" [alt]="field.name" class="w-full h-48 object-cover" />
+          } @else {
+            <div class="w-full h-48 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
+              <span class="text-5xl">⚽</span>
+            </div>
+          }
+          <div class="p-4 flex flex-col flex-1">
+            <div class="flex items-start justify-between">
+              <h3 class="text-lg font-semibold text-gray-900">{{ field.name }}</h3>
+              @if (field.is_active) {
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  {{ 'fields.active' | translate }}
+                </span>
+              } @else {
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                  {{ 'fields.inactive' | translate }}
+                </span>
+              }
+            </div>
+            <p class="text-sm text-gray-500 mt-1">
+              {{ getFieldTypeName(field.field_type) }} · {{ getSurfaceName(field.surface) }}
+            </p>
+            @if (field.description) {
+              <p class="text-sm text-gray-400 mt-2 line-clamp-2">{{ field.description }}</p>
+            }
+            <div class="mt-auto pt-3 flex items-center justify-between">
+              <p class="text-xl font-bold text-green-600">${{ field.price_per_hour }}<span class="text-sm font-normal text-gray-500">{{ 'fields.perHour' | translate }}</span></p>
+              <a [routerLink]="['/fields', field.id]"
+                 class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors text-sm font-medium">
+                {{ 'fields.viewDetail' | translate }}
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

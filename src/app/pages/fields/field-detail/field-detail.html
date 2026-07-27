@@ -1,0 +1,100 @@
+<div class="max-w-4xl mx-auto px-4 py-8">
+  @if (loading) {
+    <div class="text-center py-12 text-gray-500">{{ 'fields.loadingDetail' | translate }}</div>
+  } @else if (!field) {
+    <div class="text-center py-12 text-gray-500">{{ 'fields.notFound' | translate }}</div>
+  } @else {
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      @if (field.photo) {
+        <img [src]="field.photo" [alt]="field.name" class="w-full h-64 object-cover" />
+      } @else {
+        <div class="w-full h-64 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
+          <span class="text-6xl">⚽</span>
+        </div>
+      }
+      <div class="p-6">
+        <h1 class="text-3xl font-bold text-gray-900">{{ field.name }}</h1>
+        <div class="mt-4 grid grid-cols-2 gap-4">
+          <div>
+            <span class="text-sm text-gray-500">{{ 'fields.type' | translate }}</span>
+            <p class="font-medium">{{ getFieldTypeLabel(field.field_type) }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-500">{{ 'fields.surface' | translate }}</span>
+            <p class="font-medium">{{ getSurfaceLabel(field.surface) }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-500">{{ 'fields.pricePerHour' | translate }}</span>
+            <p class="font-bold text-green-600 text-xl">${{ field.price_per_hour }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-500">{{ 'fields.status' | translate }}</span>
+            <p class="font-medium">
+              @if (field.is_active) {
+                <span class="text-green-600">{{ 'fields.active' | translate }}</span>
+              } @else {
+                <span class="text-red-600">{{ 'fields.inactive' | translate }}</span>
+              }
+            </p>
+          </div>
+        </div>
+        @if (field.description) {
+          <div class="mt-4">
+            <span class="text-sm text-gray-500">{{ 'fields.description' | translate }}</span>
+            <p class="mt-1 text-gray-700">{{ field.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="mt-8 bg-white rounded-lg shadow p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900">{{ 'availability.title' | translate }}</h2>
+        <div class="flex items-center gap-2">
+          <label class="text-sm font-medium text-gray-700">{{ 'availability.selectDate' | translate }}</label>
+          <input type="date" [(ngModel)]="selectedDate" (change)="onDateChange()" [min]="selectedDate"
+                 class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-green-500 focus:border-green-500" />
+        </div>
+      </div>
+
+      @if (loadingSlots) {
+        <div class="text-center py-8 text-gray-500">{{ 'availability.loading' | translate }}</div>
+      } @else if (availability) {
+        <div class="flex items-center gap-4 mb-4 text-sm">
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded bg-green-500"></span>
+            <span class="text-gray-600">{{ 'availability.available' | translate }}</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded bg-red-300"></span>
+            <span class="text-gray-600">{{ 'availability.booked' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-5 gap-3">
+          @for (slot of availability.slots; track slot.start_time) {
+            @if (slot.available) {
+              <button (click)="bookSlot(slot)"
+                      class="border-2 border-green-400 bg-green-50 text-green-800 rounded-lg py-3 px-2 text-center hover:bg-green-100 hover:border-green-500 transition-colors cursor-pointer">
+                <p class="font-semibold text-sm">{{ slot.start_time }}</p>
+                <p class="text-xs text-green-600">{{ 'availability.free' | translate }}</p>
+              </button>
+            } @else {
+              <div class="border-2 border-red-200 bg-red-50 text-red-400 rounded-lg py-3 px-2 text-center cursor-not-allowed">
+                <p class="font-semibold text-sm">{{ slot.start_time }}</p>
+                <p class="text-xs text-red-400">{{ 'availability.occupied' | translate }}</p>
+              </div>
+            }
+          }
+        </div>
+      }
+
+      <div class="mt-6 flex gap-4">
+        <a routerLink="/fields"
+           class="border border-gray-300 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-50 transition-colors font-medium">
+          {{ 'fields.back' | translate }}
+        </a>
+      </div>
+    </div>
+  }
+</div>

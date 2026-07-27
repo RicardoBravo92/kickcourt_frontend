@@ -1,0 +1,52 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">{{ 'admin.manageBookings' | translate }}</h1>
+    <a routerLink="/admin" class="text-green-600 hover:text-green-700 font-medium text-sm">{{ 'admin.backToPanel' | translate }}</a>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-12 text-gray-500">{{ 'common.loading' | translate }}</div>
+  } @else if (bookings.length === 0) {
+    <div class="text-center py-12 text-gray-500">{{ 'admin.noBookings' | translate }}</div>
+  } @else {
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.id' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'admin.user' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.field' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.date' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.horario' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'fields.status' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.total' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'admin.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          @for (b of bookings; track b.id) {
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-sm text-gray-900">#{{ b.id }}</td>
+              <td class="px-6 py-4 text-sm text-gray-600">{{ b.user }}</td>
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ b.field_name }}</td>
+              <td class="px-6 py-4 text-sm text-gray-600">{{ b.date }}</td>
+              <td class="px-6 py-4 text-sm text-gray-600">{{ b.start_time }} - {{ b.end_time }}</td>
+              <td class="px-6 py-4">
+                <span [class]="'px-2 py-1 text-xs font-medium rounded-full ' + getStatusColor(b.status)">
+                  {{ b.status }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">${{ b.total_price }}</td>
+              <td class="px-6 py-4 text-sm space-x-2">
+                @if (b.status !== 'CANCELLED') {
+                  <button (click)="cancelBooking(b.id!)" class="text-red-600 hover:text-red-800">{{ 'admin.delete' | translate }}</button>
+                }
+                <button (click)="restoreBooking(b.id!)" class="text-blue-600 hover:text-blue-800">{{ 'admin.restore' | translate }}</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
