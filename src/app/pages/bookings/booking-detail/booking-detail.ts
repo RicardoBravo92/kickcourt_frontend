@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BookingService } from '../../../services/booking';
+import { ToastService } from '../../../services/toast';
 import { Booking } from '../../../models/booking';
 import { TranslatePipe } from '../../../pipes/translate';
 
@@ -14,6 +15,7 @@ export class BookingDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private bookingService = inject(BookingService);
+  private toast = inject(ToastService);
 
   booking: Booking | null = null;
   loading = true;
@@ -37,8 +39,12 @@ export class BookingDetail implements OnInit {
       next: () => {
         if (this.booking) this.booking.status = 'CANCELLED';
         this.cancelling = false;
+        this.toast.success('toast.bookingCancelled');
       },
-      error: () => (this.cancelling = false),
+      error: () => {
+        this.cancelling = false;
+        this.toast.error('toast.cancelError');
+      },
     });
   }
 

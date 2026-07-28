@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FieldService } from '../../../services/field';
 import { BookingService } from '../../../services/booking';
+import { ToastService } from '../../../services/toast';
 import { Field } from '../../../models/field';
 import { Booking } from '../../../models/booking';
 import { TranslatePipe } from '../../../pipes/translate';
@@ -18,6 +19,7 @@ export class BookingCreate implements OnInit {
   private router = inject(Router);
   private fieldService = inject(FieldService);
   private bookingService = inject(BookingService);
+  private toast = inject(ToastService);
 
   field: Field | null = null;
   booking = {
@@ -48,9 +50,13 @@ export class BookingCreate implements OnInit {
     this.loading = true;
     this.error = '';
     this.bookingService.createBooking(this.booking).subscribe({
-      next: (b: Booking) => this.router.navigate(['/bookings', b.id]),
+      next: (b: Booking) => {
+        this.toast.success('toast.bookingCreated');
+        this.router.navigate(['/bookings', b.id]);
+      },
       error: (err: { error: Record<string, unknown> | null }) => {
         this.loading = false;
+        this.toast.error('toast.bookingError');
         const errors = err.error;
         if (errors && typeof errors === 'object') {
           this.error = Object.values(errors).flat().join(' ');

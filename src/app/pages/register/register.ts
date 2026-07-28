@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
+import { ToastService } from '../../services/toast';
 import { TranslatePipe } from '../../pipes/translate';
 
 @Component({
@@ -13,6 +14,7 @@ import { TranslatePipe } from '../../pipes/translate';
 export class Register {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private toast = inject(ToastService);
 
   userData = {
     username: '',
@@ -28,9 +30,13 @@ export class Register {
     this.loading = true;
     this.error = '';
     this.authService.register(this.userData).subscribe({
-      next: () => this.router.navigate(['/login']),
+      next: () => {
+        this.toast.success('toast.registerSuccess');
+        this.router.navigate(['/login']);
+      },
       error: (err: { error: Record<string, unknown> | null }) => {
         this.loading = false;
+        this.toast.error('toast.registerError');
         const errors = err.error;
         if (errors && typeof errors === 'object') {
           this.error = Object.values(errors).flat().join(' ');

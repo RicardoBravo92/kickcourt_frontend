@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FieldService } from '../../../services/field';
 import { FieldScheduleService } from '../../../services/field-schedule';
+import { ToastService } from '../../../services/toast';
 import { Field, FieldSchedule } from '../../../models/field';
 import { TranslatePipe } from '../../../pipes/translate';
 
@@ -15,6 +16,7 @@ import { TranslatePipe } from '../../../pipes/translate';
 export class AdminSchedules implements OnInit {
   private fieldService = inject(FieldService);
   private scheduleService = inject(FieldScheduleService);
+  private toast = inject(ToastService);
 
   fields: Field[] = [];
   selectedFieldId: number | null = null;
@@ -84,9 +86,11 @@ export class AdminSchedules implements OnInit {
     this.scheduleService.createSchedule(newSchedule).subscribe({
       next: (s) => {
         this.schedules.push(s);
+        this.toast.success('toast.scheduleCreated');
       },
       error: (err) => {
         this.error = err.error?.detail || 'Error creating schedule';
+        this.toast.error('toast.scheduleError');
       },
     });
   }
@@ -94,10 +98,14 @@ export class AdminSchedules implements OnInit {
   saveSchedule(schedule: FieldSchedule) {
     this.saving = true;
     this.scheduleService.updateSchedule(schedule.id, schedule).subscribe({
-      next: () => (this.saving = false),
+      next: () => {
+        this.saving = false;
+        this.toast.success('toast.scheduleUpdated');
+      },
       error: (err) => {
         this.saving = false;
         this.error = err.error?.detail || 'Error saving schedule';
+        this.toast.error('toast.scheduleError');
       },
     });
   }
@@ -106,9 +114,11 @@ export class AdminSchedules implements OnInit {
     this.scheduleService.deleteSchedule(id).subscribe({
       next: () => {
         this.schedules = this.schedules.filter(s => s.id !== id);
+        this.toast.success('toast.scheduleDeleted');
       },
       error: (err) => {
         this.error = err.error?.detail || 'Error deleting schedule';
+        this.toast.error('toast.scheduleError');
       },
     });
   }

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../../pipes/translate';
 import { DashboardService, DashboardStats } from '../../../services/dashboard';
 import { FieldService } from '../../../services/field';
+import { ToastService } from '../../../services/toast';
 import { Field } from '../../../models/field';
 import { Chart, registerables } from 'chart.js';
 
@@ -19,6 +20,7 @@ Chart.register(...registerables);
 export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
   private dashboardService = inject(DashboardService);
   private fieldService = inject(FieldService);
+  private toast = inject(ToastService);
 
   stats: DashboardStats | null = null;
   fields: Field[] = [];
@@ -204,6 +206,7 @@ export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
       date_to: this.exportDateTo,
     });
     window.open(url, '_blank');
+    this.toast.success('toast.csvExported');
   }
 
   getStatusCount(status: string): number {

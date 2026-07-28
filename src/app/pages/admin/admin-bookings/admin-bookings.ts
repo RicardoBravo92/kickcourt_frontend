@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { BookingService } from '../../../services/booking';
+import { ToastService } from '../../../services/toast';
 import { Booking } from '../../../models/booking';
 import { TranslatePipe } from '../../../pipes/translate';
 
@@ -12,6 +13,7 @@ import { TranslatePipe } from '../../../pipes/translate';
 })
 export class AdminBookings implements OnInit {
   private bookingService = inject(BookingService);
+  private toast = inject(ToastService);
 
   bookings: Booking[] = [];
   loading = true;
@@ -33,13 +35,21 @@ export class AdminBookings implements OnInit {
 
   cancelBooking(id: number) {
     this.bookingService.cancelBooking(id).subscribe({
-      next: () => this.loadBookings(),
+      next: () => {
+        this.toast.success('toast.bookingCancelled');
+        this.loadBookings();
+      },
+      error: () => this.toast.error('toast.cancelError'),
     });
   }
 
   restoreBooking(id: number) {
     this.bookingService.restoreBooking(id).subscribe({
-      next: () => this.loadBookings(),
+      next: () => {
+        this.toast.success('toast.bookingRestored');
+        this.loadBookings();
+      },
+      error: () => this.toast.error('toast.restoreError'),
     });
   }
 

@@ -254,5 +254,33 @@
     "confirmed": "Confirmed",
     "cancelled": "Cancelled",
     "completed": "Completed"
+  },
+  "toast": {
+    "loginSuccess": "Login successful",
+    "loginError": "Login failed",
+    "registerSuccess": "Account created successfully",
+    "registerError": "Registration error",
+    "bookingCreated": "Booking created successfully",
+    "bookingError": "Error creating booking",
+    "bookingCancelled": "Booking cancelled",
+    "cancelError": "Error cancelling booking",
+    "bookingRestored": "Booking restored",
+    "restoreError": "Error restoring booking",
+    "profileUpdated": "Profile updated successfully",
+    "profileError": "Error updating profile",
+    "passwordChanged": "Password changed successfully",
+    "passwordError": "Error changing password",
+    "passwordMismatch": "Passwords don't match",
+    "fieldCreated": "Field created successfully",
+    "fieldUpdated": "Field updated successfully",
+    "fieldError": "Error saving field",
+    "scheduleCreated": "Schedule created",
+    "scheduleUpdated": "Schedule saved",
+    "scheduleDeleted": "Schedule deleted",
+    "scheduleError": "Error saving schedule",
+    "blockCreated": "Block created",
+    "blockDeleted": "Block deleted",
+    "blockError": "Error saving block",
+    "csvExported": "CSV export opened"
   }
 }

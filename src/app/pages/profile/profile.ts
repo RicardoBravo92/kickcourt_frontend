@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
+import { ToastService } from '../../services/toast';
 import { User } from '../../models/user';
 import { TranslatePipe } from '../../pipes/translate';
 
@@ -12,6 +13,7 @@ import { TranslatePipe } from '../../pipes/translate';
 })
 export class Profile implements OnInit {
   private authService = inject(AuthService);
+  private toast = inject(ToastService);
 
   profile: User = { username: '' };
   loading = true;
@@ -48,9 +50,11 @@ export class Profile implements OnInit {
         this.profile = user;
         this.saving = false;
         this.profileSuccess = 'profile.updateSuccess';
+        this.toast.success('toast.profileUpdated');
       },
       error: (err: { error: Record<string, unknown> }) => {
         this.saving = false;
+        this.toast.error('toast.profileError');
         const errors = err.error;
         if (errors && typeof errors === 'object') {
           this.profileError = Object.values(errors).flat().join(' ');
@@ -69,6 +73,7 @@ export class Profile implements OnInit {
     if (this.newPassword !== this.newPasswordConfirm) {
       this.savingPassword = false;
       this.passwordError = 'profile.passwordMismatch';
+      this.toast.error('toast.passwordMismatch');
       return;
     }
 
@@ -80,12 +85,14 @@ export class Profile implements OnInit {
       next: () => {
         this.savingPassword = false;
         this.passwordSuccess = 'profile.passwordSuccess';
+        this.toast.success('toast.passwordChanged');
         this.oldPassword = '';
         this.newPassword = '';
         this.newPasswordConfirm = '';
       },
       error: (err: { error: Record<string, unknown> }) => {
         this.savingPassword = false;
+        this.toast.error('toast.passwordError');
         const errors = err.error;
         if (errors && typeof errors === 'object') {
           this.passwordError = Object.values(errors).flat().join(' ');

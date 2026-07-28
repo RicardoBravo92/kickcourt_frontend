@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FieldService } from '../../../services/field';
 import { FieldBlockService } from '../../../services/field-block';
+import { ToastService } from '../../../services/toast';
 import { Field, FieldBlock } from '../../../models/field';
 import { TranslatePipe } from '../../../pipes/translate';
 
@@ -15,6 +16,7 @@ import { TranslatePipe } from '../../../pipes/translate';
 export class AdminBlocks implements OnInit {
   private fieldService = inject(FieldService);
   private blockService = inject(FieldBlockService);
+  private toast = inject(ToastService);
 
   fields: Field[] = [];
   selectedFieldId: number | null = null;
@@ -75,10 +77,12 @@ export class AdminBlocks implements OnInit {
         this.blocks.unshift(b);
         this.newBlock = { date: '', start_time: '08:00', end_time: '22:00', reason: '' };
         this.saving = false;
+        this.toast.success('toast.blockCreated');
       },
       error: (err) => {
         this.saving = false;
         this.error = err.error?.detail || 'Error creating block';
+        this.toast.error('toast.blockError');
       },
     });
   }
@@ -87,9 +91,11 @@ export class AdminBlocks implements OnInit {
     this.blockService.deleteBlock(id).subscribe({
       next: () => {
         this.blocks = this.blocks.filter((b) => b.id !== id);
+        this.toast.success('toast.blockDeleted');
       },
       error: (err) => {
         this.error = err.error?.detail || 'Error deleting block';
+        this.toast.error('toast.blockError');
       },
     });
   }

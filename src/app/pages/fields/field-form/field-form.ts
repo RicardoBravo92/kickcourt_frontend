@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FieldService } from '../../../services/field';
+import { ToastService } from '../../../services/toast';
 import { Field } from '../../../models/field';
 import { TranslatePipe } from '../../../pipes/translate';
 
@@ -15,6 +16,7 @@ export class FieldForm implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fieldService = inject(FieldService);
+  private toast = inject(ToastService);
 
   field: Partial<Field> = {
     name: '',
@@ -61,9 +63,13 @@ export class FieldForm implements OnInit {
       : this.fieldService.createField(this.field);
 
     obs.subscribe({
-      next: () => this.router.navigate(['/admin']),
+      next: () => {
+        this.toast.success(this.isEdit ? 'toast.fieldUpdated' : 'toast.fieldCreated');
+        this.router.navigate(['/admin']);
+      },
       error: (err: { error: Record<string, unknown> | null }) => {
         this.loading = false;
+        this.toast.error('toast.fieldError');
         const errors = err.error;
         if (errors && typeof errors === 'object') {
           this.error = Object.values(errors).flat().join(' ');

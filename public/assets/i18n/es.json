@@ -254,5 +254,33 @@
     "confirmed": "Confirmada",
     "cancelled": "Cancelada",
     "completed": "Completada"
+  },
+  "toast": {
+    "loginSuccess": "Sesión iniciada correctamente",
+    "loginError": "Error al iniciar sesión",
+    "registerSuccess": "Cuenta creada correctamente",
+    "registerError": "Error al registrarse",
+    "bookingCreated": "Reserva creada correctamente",
+    "bookingError": "Error al crear la reserva",
+    "bookingCancelled": "Reserva cancelada",
+    "cancelError": "Error al cancelar la reserva",
+    "bookingRestored": "Reserva restaurada",
+    "restoreError": "Error al restaurar la reserva",
+    "profileUpdated": "Perfil actualizado correctamente",
+    "profileError": "Error al actualizar el perfil",
+    "passwordChanged": "Contraseña cambiada correctamente",
+    "passwordError": "Error al cambiar la contraseña",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "fieldCreated": "Cancha creada correctamente",
+    "fieldUpdated": "Cancha actualizada correctamente",
+    "fieldError": "Error al guardar la cancha",
+    "scheduleCreated": "Horario creado",
+    "scheduleUpdated": "Horario guardado",
+    "scheduleDeleted": "Horario eliminado",
+    "scheduleError": "Error al guardar el horario",
+    "blockCreated": "Bloqueo creado",
+    "blockDeleted": "Bloqueo eliminado",
+    "blockError": "Error al guardar el bloqueo",
+    "csvExported": "Exportación CSV abierta"
   }
 }
