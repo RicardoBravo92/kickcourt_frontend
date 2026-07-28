@@ -11,9 +11,9 @@
   },
   "auth": {
     "loginTitle": "Sign In",
-    "loginSubtitle": "Access your SoccerDev account",
+    "loginSubtitle": "Access your kickcourt account",
     "registerTitle": "Create Account",
-    "registerSubtitle": "Sign up on SoccerDev",
+    "registerSubtitle": "Sign up on kickcourt",
     "username": "Username",
     "email": "Email",
     "phone": "Phone",
@@ -195,7 +195,7 @@
     "statFields": "Available Pitches",
     "statBookings": "+1,000 Bookings",
     "statSatisfaction": "99.8% Satisfaction",
-    "howTitle": "How Does SoccerDev Work?",
+    "howTitle": "How Does kickcourt Work?",
     "howSubtitle": "Booking your match slot has never been simpler. Follow these 3 easy steps:",
     "step1Title": "1. Search & Filter",
     "step1Desc": "Find pitches by format (5v5, 7v7, 11v11), surface type (Synthetic, Natural, Indoor), or facility name.",
@@ -203,7 +203,7 @@
     "step2Desc": "View live availability for any date and choose the time slot that fits your team schedule.",
     "step3Title": "3. Get Ready to Play!",
     "step3Desc": "Confirm your booking instantly with no calls or waiting. Your pitch is 100% reserved.",
-    "featuresTitle": "Why Choose SoccerDev?",
+    "featuresTitle": "Why Choose kickcourt?",
     "featuresSubtitle": "Built for soccer passionates who value convenience and quality.",
     "feat1Title": "24/7 Live Availability",
     "feat1Desc": "Access real-time open slots anytime from any device.",
@@ -285,7 +285,8 @@
     "myCourts": "My Courts",
     "noCourts": "You have no courts yet",
     "createFirst": "Create your first court",
-    "quickLinks": "Quick Links"
+    "quickLinks": "Quick Links",
+    "myBookings": "My Bookings"
   },
   "toast": {
     "loginSuccess": "Login successful",

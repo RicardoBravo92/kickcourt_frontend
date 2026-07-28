@@ -9,9 +9,9 @@
   },
   "auth": {
     "loginTitle": "Iniciar Sesión",
-    "loginSubtitle": "Accede a tu cuenta de SoccerDev",
+    "loginSubtitle": "Accede a tu cuenta de kickcourt",
     "registerTitle": "Crear Cuenta",
-    "registerSubtitle": "Regístrate en SoccerDev",
+    "registerSubtitle": "Regístrate en kickcourt",
     "username": "Usuario",
     "email": "Email",
     "phone": "Teléfono",

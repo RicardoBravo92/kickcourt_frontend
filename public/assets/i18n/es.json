@@ -11,9 +11,9 @@
   },
   "auth": {
     "loginTitle": "Iniciar Sesión",
-    "loginSubtitle": "Accede a tu cuenta de SoccerDev",
+    "loginSubtitle": "Accede a tu cuenta de kickcourt",
     "registerTitle": "Crear Cuenta",
-    "registerSubtitle": "Regístrate en SoccerDev",
+    "registerSubtitle": "Regístrate en kickcourt",
     "username": "Usuario",
     "email": "Email",
     "phone": "Teléfono",
@@ -195,7 +195,7 @@
     "statFields": "Canchas disponibles",
     "statBookings": "+1,000 Reservas",
     "statSatisfaction": "99.8% Satisfacción",
-    "howTitle": "¿Cómo Funciona SoccerDev?",
+    "howTitle": "¿Cómo Funciona kickcourt?",
     "howSubtitle": "Reservar tu turno para jugar nunca fue tan sencillo. Sigue estos 3 simples pasos:",
     "step1Title": "1. Busca y Filtra",
     "step1Desc": "Encuentra canchas por tipo de juego (F5, F7, F11), tipo de superficie (Sintético, Natural, Indoor) o nombre del complejo.",
@@ -203,7 +203,7 @@
     "step2Desc": "Visualiza la disponibilidad de horarios en tiempo real para cualquier fecha y elige el turno que mejor se adapte a tu equipo.",
     "step3Title": "3. ¡Sal a Jugar!",
     "step3Desc": "Confirma tu reserva de forma instantánea sin llamadas ni esperas. Tu cancha queda 100% asegurada.",
-    "featuresTitle": "¿Por qué elegir SoccerDev?",
+    "featuresTitle": "¿Por qué elegir kickcourt?",
     "featuresSubtitle": "Diseñado para apasionados del fútbol que valoran su tiempo y la comodidad.",
     "feat1Title": "Disponibilidad Real 24/7",
     "feat1Desc": "Accede a los horarios libres actualizados al instante en cualquier momento del día.",
@@ -285,7 +285,8 @@
     "myCourts": "Mis Canchas",
     "noCourts": "No tienes canchas aún",
     "createFirst": "Crea tu primera cancha",
-    "quickLinks": "Accesos Rápidos"
+    "quickLinks": "Accesos Rápidos",
+    "myBookings": "Mis Reservas"
   },
   "toast": {
     "loginSuccess": "Sesión iniciada correctamente",

@@ -8,12 +8,12 @@ import { Court, CourtSchedule } from '../../../models/court';
 import { TranslatePipe } from '../../../pipes/translate';
 
 @Component({
-  selector: 'app-admin-schedules',
+  selector: 'app-vendor-schedules',
   imports: [RouterLink, FormsModule, TranslatePipe],
-  templateUrl: './admin-schedules.html',
-  styleUrl: './admin-schedules.css',
+  templateUrl: './vendor-schedules.html',
+  styleUrl: './vendor-schedules.css',
 })
-export class AdminSchedules implements OnInit {
+export class VendorSchedules implements OnInit {
   private courtService = inject(CourtService);
   private scheduleService = inject(CourtScheduleService);
   private toast = inject(ToastService);
@@ -34,37 +34,30 @@ export class AdminSchedules implements OnInit {
     { value: 5, label: 'schedules.saturday' },
     { value: 6, label: 'schedules.sunday' },
   ];
-  selectedFieldId: any;
 
   ngOnInit() {
-    this.courtService.getCourts().subscribe({
+    this.courtService.getCourts({}).subscribe({
       next: (c) => (this.courts = c),
     });
   }
 
-  onFieldChange() {
-    const fieldId = this.selectedFieldId;
-    this.schedules = [];
-    this.error = '';
-    if (fieldId === null) {
+  onCourtChange() {
+    if (!this.selectedCourtId) {
       this.schedules = [];
       return;
     }
     this.loading = true;
-    this.scheduleService.getSchedules(fieldId).subscribe({
+    this.scheduleService.getSchedules(this.selectedCourtId).subscribe({
       next: (s) => {
-        if (this.selectedFieldId !== fieldId) return;
         this.schedules = s;
         this.loading = false;
       },
-      error: () => {
-        if (this.selectedFieldId === fieldId) this.loading = false;
-      },
+      error: () => (this.loading = false),
     });
   }
 
   getScheduleForDay(day: number): CourtSchedule | undefined {
-    return this.schedules.find((s) => s.day_of_week === day);
+    return this.schedules.find(s => s.day_of_week === day);
   }
 
   updateScheduleTime(day: number, field: string, value: string) {
@@ -120,7 +113,7 @@ export class AdminSchedules implements OnInit {
   deleteSchedule(id: number) {
     this.scheduleService.deleteSchedule(id).subscribe({
       next: () => {
-        this.schedules = this.schedules.filter((s) => s.id !== id);
+        this.schedules = this.schedules.filter(s => s.id !== id);
         this.toast.success('toast.scheduleDeleted');
       },
       error: () => {

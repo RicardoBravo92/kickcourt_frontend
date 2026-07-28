@@ -15,6 +15,10 @@ export class AuthService {
 
   currentUser = signal<User | null>(null);
 
+  constructor() {
+    this.loadProfile();
+  }
+
   login(credentials: { username: string; password: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login/`, credentials).pipe(
       tap(response => {
