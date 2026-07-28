@@ -2,21 +2,25 @@
   <div class="flex items-center justify-between mb-8">
     <h1 class="text-3xl font-bold text-gray-900">{{ 'dashboard.title' | translate }}</h1>
     <div class="flex gap-3">
+      <a routerLink="/admin/courts/new"
+         class="bg-emerald-600 text-white py-2.5 px-4 rounded-xl hover:bg-emerald-700 font-medium text-sm transition-colors">
+        {{ 'admin.newField' | translate }}
+      </a>
       <a routerLink="/admin/schedules"
-         class="border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 font-medium text-sm">
+         class="border border-gray-300 text-gray-700 py-2.5 px-4 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors">
         {{ 'admin.schedules' | translate }}
       </a>
       <a routerLink="/admin/blocks"
-         class="border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 font-medium text-sm">
+         class="border border-gray-300 text-gray-700 py-2.5 px-4 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors">
         {{ 'admin.blocks' | translate }}
       </a>
       <a routerLink="/admin/bookings"
-         class="border border-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-50 font-medium text-sm">
+         class="border border-gray-300 text-gray-700 py-2.5 px-4 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors">
         {{ 'admin.manageBookings' | translate }}
       </a>
-      <a routerLink="/admin/fields/new"
-         class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 font-medium text-sm">
-        {{ 'admin.newField' | translate }}
+      <a routerLink="/admin/vendors"
+         class="border border-gray-300 text-gray-700 py-2.5 px-4 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors">
+        {{ 'admin.vendors' | translate }}
       </a>
     </div>
   </div>
@@ -25,56 +29,45 @@
     <div class="text-center py-12 text-gray-500">{{ 'common.loading' | translate }}</div>
   } @else if (stats) {
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-      <div class="bg-white rounded-lg shadow p-4">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
         <p class="text-sm text-gray-500">{{ 'dashboard.totalBookings' | translate }}</p>
-        <p class="text-2xl font-bold text-gray-900">{{ stats.summary.total_bookings }}</p>
+        <p class="text-2xl font-bold text-gray-900">{{ stats.total_bookings }}</p>
       </div>
-      <div class="bg-white rounded-lg shadow p-4">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
         <p class="text-sm text-gray-500">{{ 'dashboard.totalRevenue' | translate }}</p>
-        <p class="text-2xl font-bold text-green-600">${{ stats.summary.total_revenue | number:'1.0-0' }}</p>
+        <p class="text-2xl font-bold text-emerald-600">\${{ stats.total_revenue | number:'1.0-0' }}</p>
       </div>
-      <div class="bg-white rounded-lg shadow p-4">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
         <p class="text-sm text-gray-500">{{ 'dashboard.last30Days' | translate }}</p>
-        <p class="text-2xl font-bold text-blue-600">{{ stats.summary.bookings_last_30_days }}</p>
+        <p class="text-2xl font-bold text-blue-600">{{ stats.month_bookings }}</p>
       </div>
-      <div class="bg-white rounded-lg shadow p-4">
-        <p class="text-sm text-gray-500">{{ 'dashboard.last7Days' | translate }}</p>
-        <p class="text-2xl font-bold text-blue-500">{{ stats.summary.bookings_last_7_days }}</p>
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <p class="text-sm text-gray-500">{{ 'dashboard.monthRevenue' | translate }}</p>
+        <p class="text-2xl font-bold text-emerald-600">\${{ stats.month_revenue | number:'1.0-0' }}</p>
       </div>
-      <div class="bg-white rounded-lg shadow p-4">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
         <p class="text-sm text-gray-500">{{ 'dashboard.activeFields' | translate }}</p>
-        <p class="text-2xl font-bold text-purple-600">{{ stats.summary.active_fields }}</p>
+        <p class="text-2xl font-bold text-purple-600">{{ stats.active_courts }}</p>
       </div>
-      <div class="bg-white rounded-lg shadow p-4">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
         <p class="text-sm text-gray-500">{{ 'dashboard.totalUsers' | translate }}</p>
-        <p class="text-2xl font-bold text-orange-500">{{ stats.summary.total_users }}</p>
+        <p class="text-2xl font-bold text-orange-500">{{ stats.total_users }}</p>
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-      <div class="bg-white rounded-lg shadow p-6">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ 'dashboard.bookingsByDay' | translate }}</h2>
         <div class="h-64"><canvas #bookingsChart></canvas></div>
       </div>
-      <div class="bg-white rounded-lg shadow p-6">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ 'dashboard.byStatus' | translate }}</h2>
         <div class="h-64 flex items-center justify-center"><canvas #statusChart></canvas></div>
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-      <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ 'dashboard.bookingsByHour' | translate }}</h2>
-        <div class="h-64"><canvas #hourChart></canvas></div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ 'dashboard.topFields' | translate }}</h2>
-        <div class="h-64"><canvas #fieldsChart></canvas></div>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-      <div class="bg-white rounded-lg shadow p-6">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ 'dashboard.topUsers' | translate }}</h2>
         @if (stats.top_users.length === 0) {
           <p class="text-gray-500">{{ 'dashboard.noData' | translate }}</p>
@@ -84,15 +77,13 @@
               <tr>
                 <th class="text-left text-xs font-medium text-gray-500 uppercase pb-2">{{ 'dashboard.user' | translate }}</th>
                 <th class="text-right text-xs font-medium text-gray-500 uppercase pb-2">{{ 'dashboard.bookings' | translate }}</th>
-                <th class="text-right text-xs font-medium text-gray-500 uppercase pb-2">{{ 'dashboard.spent' | translate }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-              @for (u of stats.top_users; track u.user__username) {
+              @for (u of stats.top_users; track u.id) {
                 <tr>
-                  <td class="py-2 text-sm font-medium text-gray-900">{{ u.user__username }}</td>
+                  <td class="py-2 text-sm font-medium text-gray-900">{{ u.username }}</td>
                   <td class="py-2 text-sm text-gray-600 text-right">{{ u.booking_count }}</td>
-                  <td class="py-2 text-sm text-gray-600 text-right">${{ u.total_spent | number:'1.0-0' }}</td>
                 </tr>
               }
             </tbody>
@@ -100,31 +91,31 @@
         }
       </div>
 
-      <div class="bg-white rounded-lg shadow p-6">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ 'dashboard.statusBreakdown' | translate }}</h2>
         <div class="grid grid-cols-2 gap-4">
-          <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
+          <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-xl">
             <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
             <div>
               <p class="text-sm text-gray-500">{{ 'dashboard.pending' | translate }}</p>
               <p class="text-xl font-bold text-gray-900">{{ getStatusCount('PENDING') }}</p>
             </div>
           </div>
-          <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+          <div class="flex items-center gap-3 p-3 bg-emerald-50 rounded-xl">
+            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
             <div>
               <p class="text-sm text-gray-500">{{ 'dashboard.confirmed' | translate }}</p>
               <p class="text-xl font-bold text-gray-900">{{ getStatusCount('CONFIRMED') }}</p>
             </div>
           </div>
-          <div class="flex items-center gap-3 p-3 bg-red-50 rounded-lg">
+          <div class="flex items-center gap-3 p-3 bg-red-50 rounded-xl">
             <span class="w-3 h-3 rounded-full bg-red-500"></span>
             <div>
               <p class="text-sm text-gray-500">{{ 'dashboard.cancelled' | translate }}</p>
               <p class="text-xl font-bold text-gray-900">{{ getStatusCount('CANCELLED') }}</p>
             </div>
           </div>
-          <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+          <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
             <span class="w-3 h-3 rounded-full bg-gray-500"></span>
             <div>
               <p class="text-sm text-gray-500">{{ 'dashboard.completed' | translate }}</p>
@@ -135,13 +126,13 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
       <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ 'dashboard.exportCsv' | translate }}</h2>
       <div class="flex flex-wrap items-end gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'dashboard.field' | translate }}</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'dashboard.status' | translate }}</label>
           <select [(ngModel)]="exportStatus"
-                  class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-green-500 focus:border-green-500">
+                  class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-emerald-500 focus:border-emerald-500">
             @for (opt of statusOptions; track opt.value) {
               <option [value]="opt.value">{{ opt.label | translate }}</option>
             }
@@ -150,15 +141,15 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'dashboard.dateFrom' | translate }}</label>
           <input type="date" [(ngModel)]="exportDateFrom"
-                 class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-green-500 focus:border-green-500" />
+                 class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-emerald-500 focus:border-emerald-500" />
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'dashboard.dateTo' | translate }}</label>
           <input type="date" [(ngModel)]="exportDateTo"
-                 class="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-green-500 focus:border-green-500" />
+                 class="px-3 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-emerald-500 focus:border-emerald-500" />
         </div>
         <button (click)="exportCsv()"
-                class="bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700 font-medium text-sm">
+                class="bg-emerald-600 text-white py-2.5 px-6 rounded-xl hover:bg-emerald-700 font-medium text-sm transition-colors">
           {{ 'dashboard.downloadCsv' | translate }}
         </button>
       </div>

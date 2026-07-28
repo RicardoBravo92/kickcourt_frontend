@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { FieldService } from '../../../services/field';
+import { CourtService } from '../../../services/court';
 import { BookingService } from '../../../services/booking';
 import { ToastService } from '../../../services/toast';
-import { Field } from '../../../models/field';
+import { Court } from '../../../models/court';
 import { Booking } from '../../../models/booking';
 import { TranslatePipe } from '../../../pipes/translate';
 
@@ -17,13 +17,13 @@ import { TranslatePipe } from '../../../pipes/translate';
 export class BookingCreate implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private fieldService = inject(FieldService);
+  private courtService = inject(CourtService);
   private bookingService = inject(BookingService);
   private toast = inject(ToastService);
 
-  field: Field | null = null;
+  court: Court | null = null;
   booking = {
-    field: 0,
+    court: 0,
     date: '',
     start_time: '',
     end_time: '',
@@ -32,17 +32,17 @@ export class BookingCreate implements OnInit {
   loading = false;
 
   ngOnInit() {
-    const fieldId = Number(this.route.snapshot.paramMap.get('id'));
-    this.booking.field = fieldId;
+    const courtId = Number(this.route.snapshot.paramMap.get('id'));
+    this.booking.court = courtId;
 
     const qp = this.route.snapshot.queryParams;
     if (qp['date']) this.booking.date = qp['date'];
     if (qp['start']) this.booking.start_time = qp['start'];
     if (qp['end']) this.booking.end_time = qp['end'];
 
-    this.fieldService.getFieldById(fieldId).subscribe({
-      next: (f: Field) => (this.field = f),
-      error: () => this.router.navigate(['/fields']),
+    this.courtService.getCourtById(courtId).subscribe({
+      next: (c: Court) => (this.court = c),
+      error: () => this.router.navigate(['/courts']),
     });
   }
 

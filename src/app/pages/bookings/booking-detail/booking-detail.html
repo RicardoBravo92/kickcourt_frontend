@@ -4,7 +4,7 @@
   } @else if (!booking) {
     <div class="text-center py-12 text-gray-500">{{ 'bookings.notFound' | translate }}</div>
   } @else {
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
       <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900">{{ 'bookings.id' | translate }} #{{ booking.id }}</h1>
         <span [class]="'px-3 py-1 text-sm font-medium rounded-full ' + getStatusColor(booking.status)">
@@ -15,8 +15,8 @@
       <div class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <span class="text-sm text-gray-500">{{ 'bookings.field' | translate }}</span>
-            <p class="font-medium">{{ booking.field_name }}</p>
+            <span class="text-sm text-gray-500">{{ 'bookings.court' | translate }}</span>
+            <p class="font-medium">{{ booking.court_name }}</p>
           </div>
           <div>
             <span class="text-sm text-gray-500">{{ 'bookings.date' | translate }}</span>
@@ -28,22 +28,34 @@
           </div>
           <div>
             <span class="text-sm text-gray-500">{{ 'bookings.total' | translate }}</span>
-            <p class="font-bold text-green-600 text-xl">${{ booking.total_price }}</p>
+            <p class="font-bold text-emerald-600 text-xl">${{ booking.total_price }}</p>
           </div>
+          @if (booking.vendor_name) {
+            <div>
+              <span class="text-sm text-gray-500">{{ 'bookings.vendor' | translate }}</span>
+              <p class="font-medium">{{ booking.vendor_name }}</p>
+            </div>
+          }
+          @if (booking.commission != null) {
+            <div>
+              <span class="text-sm text-gray-500">{{ 'bookings.commission' | translate }}</span>
+              <p class="font-medium">${{ booking.commission }}</p>
+            </div>
+          }
         </div>
 
         @if (booking.status !== 'CANCELLED' && booking.status !== 'COMPLETED') {
           <div class="pt-4 border-t">
             <button (click)="cancelBooking()" [disabled]="cancelling"
-                    class="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700 disabled:opacity-50 font-medium text-sm">
+                    class="bg-red-600 text-white py-2.5 px-6 rounded-xl hover:bg-red-700 disabled:opacity-50 font-medium text-sm transition-colors">
               @if (cancelling) { {{ 'bookings.cancellingBooking' | translate }} } @else { {{ 'bookings.cancelBooking' | translate }} }
             </button>
           </div>
         }
       </div>
 
-      <div class="mt-6 pt-4 border-t">
-        <a routerLink="/my-bookings" class="text-green-600 hover:text-green-700 font-medium text-sm">
+      <div class="mt-6 pt-4 border-t flex gap-4">
+        <a routerLink="/bookings" class="text-emerald-600 hover:text-emerald-700 font-medium text-sm">
           {{ 'bookings.backToBookings' | translate }}
         </a>
       </div>

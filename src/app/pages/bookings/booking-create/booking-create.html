@@ -1,42 +1,42 @@
 <div class="max-w-2xl mx-auto px-4 py-8">
   <h1 class="text-3xl font-bold text-gray-900 mb-6">{{ 'bookings.createTitle' | translate }}</h1>
 
-  @if (field) {
-    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-      <h2 class="font-semibold text-green-800">{{ field.name }}</h2>
-      <p class="text-sm text-green-700">${{ field.price_per_hour }}{{ 'fields.perHour' | translate }}</p>
+  @if (court) {
+    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6">
+      <h2 class="font-semibold text-emerald-800">{{ court.name }}</h2>
+      <p class="text-sm text-emerald-700">${{ court.price_per_hour }}{{ 'fields.perHour' | translate }}</p>
     </div>
   }
 
   @if (error) {
-    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-md text-sm mb-4">{{ error | translate }}</div>
+    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">{{ error }}</div>
   }
 
-  <form (ngSubmit)="onSubmit()" class="bg-white rounded-lg shadow p-6 space-y-4">
+  <form (ngSubmit)="onSubmit()" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
     <div>
       <label class="block text-sm font-medium text-gray-700">{{ 'bookings.date' | translate }}</label>
       <input type="date" [(ngModel)]="booking.date" name="date" required
-             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" />
+             class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500" />
     </div>
     <div class="grid grid-cols-2 gap-4">
       <div>
         <label class="block text-sm font-medium text-gray-700">{{ 'bookings.startTime' | translate }}</label>
         <input type="time" [(ngModel)]="booking.start_time" name="start_time" required
-               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" />
+               class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500" />
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700">{{ 'bookings.endTime' | translate }}</label>
         <input type="time" [(ngModel)]="booking.end_time" name="end_time" required
-               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" />
+               class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500" />
       </div>
     </div>
     <div class="flex gap-4 pt-4">
       <button type="submit" [disabled]="loading"
-              class="bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700 disabled:opacity-50 font-medium">
+              class="bg-emerald-600 text-white py-2.5 px-6 rounded-xl hover:bg-emerald-700 disabled:opacity-50 font-medium transition-colors">
         @if (loading) { {{ 'bookings.cancelling' | translate }} } @else { {{ 'bookings.confirm' | translate }} }
       </button>
-      <a [routerLink]="['/fields', booking.field]"
-         class="border border-gray-300 text-gray-700 py-2 px-6 rounded-md hover:bg-gray-50 font-medium">
+      <a [routerLink]="['/courts', booking.court]"
+         class="border border-gray-300 text-gray-700 py-2.5 px-6 rounded-xl hover:bg-gray-50 font-medium transition-colors">
         {{ 'bookings.cancel' | translate }}
       </a>
     </div>

@@ -1,0 +1,56 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">{{ 'admin.vendors' | translate }}</h1>
+    <a routerLink="/admin" class="text-emerald-600 hover:text-emerald-700 font-medium text-sm">{{ 'admin.backToPanel' | translate }}</a>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-12 text-gray-500">{{ 'common.loading' | translate }}</div>
+  } @else if (vendors.length === 0) {
+    <div class="text-center py-12 text-gray-500">{{ 'admin.noVendors' | translate }}</div>
+  } @else {
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'admin.vendorName' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'admin.businessName' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'admin.email' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'admin.commission' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'admin.isApproved' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'admin.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          @for (v of vendors; track v.id) {
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ v.user || '-' }}</td>
+              <td class="px-6 py-4 text-sm text-gray-600">{{ v.business_name }}</td>
+              <td class="px-6 py-4 text-sm text-gray-600">-</td>
+              <td class="px-6 py-4 text-sm text-gray-600">{{ v.commission_rate }}%</td>
+              <td class="px-6 py-4">
+                @if (v.is_approved) {
+                  <span class="px-2 py-1 text-xs font-medium rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    {{ 'admin.approved' | translate }}
+                  </span>
+                } @else {
+                  <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200">
+                    {{ 'admin.pending' | translate }}
+                  </span>
+                }
+              </td>
+              <td class="px-6 py-4 text-sm space-x-2">
+                @if (!v.is_approved) {
+                  <button (click)="approveVendor(v.id!)"
+                          class="text-emerald-600 hover:text-emerald-800 font-medium">{{ 'admin.approve' | translate }}</button>
+                }
+                <button (click)="rejectVendor(v.id!)"
+                        class="text-red-600 hover:text-red-800 font-medium">{{ 'admin.reject' | translate }}</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -116,6 +116,15 @@ export class AuthService {
     return this.getUserRole() === 'ADMIN';
   }
 
+  isVendor(): boolean {
+    return this.getUserRole() === 'VENDOR';
+  }
+
+  isAdminOrVendor(): boolean {
+    const role = this.getUserRole();
+    return role === 'ADMIN' || role === 'VENDOR';
+  }
+
   logout(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');

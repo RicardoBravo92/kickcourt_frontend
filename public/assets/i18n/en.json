@@ -1,7 +1,8 @@
 {
   "nav": {
-    "fields": "Fields",
+    "fields": "Courts",
     "myBookings": "My Bookings",
+    "vendor": "Vendor",
     "admin": "Admin",
     "login": "Sign In",
     "register": "Sign Up",
@@ -63,7 +64,9 @@
     "cancelBtn": "Cancel",
     "saving": "Saving...",
     "saveError": "Error saving",
-    "confirmDelete": "Delete this field?"
+    "confirmDelete": "Delete this field?",
+    "sport": "Sport",
+    "playersPerSide": "Players per side"
   },
   "bookings": {
     "createTitle": "Book Field",
@@ -89,7 +92,10 @@
     "confirmCancel": "Cancel this booking?",
     "cancelledSuccess": "Booking cancelled",
     "bookedSuccess": "Booking created",
-    "id": "ID"
+    "id": "ID",
+    "court": "Court",
+    "vendor": "Vendor",
+    "commission": "Commission"
   },
   "admin": {
     "title": "Admin Panel",
@@ -112,7 +118,18 @@
     "schedulesDesc": "Manage weekly opening hours",
     "blocks": "Maintenance Blocks",
     "blocksDesc": "Block time slots for maintenance",
-    "bookingsDesc": "View and manage all bookings"
+    "bookingsDesc": "View and manage all bookings",
+    "vendors": "Vendors",
+    "vendorName": "Name",
+    "businessName": "Business Name",
+    "email": "Email",
+    "commission": "Commission",
+    "isApproved": "Approved",
+    "approved": "Approved",
+    "pending": "Pending",
+    "approve": "Approve",
+    "reject": "Reject",
+    "noVendors": "No vendors registered"
   },
   "common": {
     "loading": "Loading...",
@@ -253,7 +270,22 @@
     "pending": "Pending",
     "confirmed": "Confirmed",
     "cancelled": "Cancelled",
-    "completed": "Completed"
+    "completed": "Completed",
+    "monthRevenue": "Month Revenue",
+    "status": "Status"
+  },
+  "vendor": {
+    "dashboard": "Vendor Dashboard",
+    "newCourt": "+ New Court",
+    "totalCourts": "My Courts",
+    "totalBookings": "Total Bookings",
+    "monthBookings": "Month Bookings",
+    "totalRevenue": "Total Revenue",
+    "monthCommission": "Month Commission",
+    "myCourts": "My Courts",
+    "noCourts": "You have no courts yet",
+    "createFirst": "Create your first court",
+    "quickLinks": "Quick Links"
   },
   "toast": {
     "loginSuccess": "Login successful",
@@ -281,6 +313,9 @@
     "blockCreated": "Block created",
     "blockDeleted": "Block deleted",
     "blockError": "Error saving block",
-    "csvExported": "CSV export opened"
+    "csvExported": "CSV export opened",
+    "vendorApproved": "Vendor approved successfully",
+    "vendorRejected": "Vendor rejected",
+    "vendorError": "Error updating vendor"
   }
 }

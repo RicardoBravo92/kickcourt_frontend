@@ -6,18 +6,19 @@
   } @else if (bookings.length === 0) {
     <div class="text-center py-12">
       <p class="text-gray-500 mb-4">{{ 'bookings.noBookings' | translate }}</p>
-      <a routerLink="/fields" class="bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700 font-medium">
+      <a routerLink="/courts" class="bg-emerald-600 text-white py-2.5 px-6 rounded-xl hover:bg-emerald-700 font-medium transition-colors">
         {{ 'bookings.exploreFields' | translate }}
       </a>
     </div>
   } @else {
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.field' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.court' | translate }}</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.date' | translate }}</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.horario' | translate }}</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.vendor' | translate }}</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'fields.status' | translate }}</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'bookings.total' | translate }}</th>
           </tr>
@@ -25,9 +26,10 @@
         <tbody class="divide-y divide-gray-200">
           @for (b of bookings; track b.id) {
             <tr class="hover:bg-gray-50 cursor-pointer" [routerLink]="['/bookings', b.id]">
-              <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ b.field_name }}</td>
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ b.court_name }}</td>
               <td class="px-6 py-4 text-sm text-gray-600">{{ b.date }}</td>
               <td class="px-6 py-4 text-sm text-gray-600">{{ b.start_time }} - {{ b.end_time }}</td>
+              <td class="px-6 py-4 text-sm text-gray-600">{{ b.vendor_name || '-' }}</td>
               <td class="px-6 py-4">
                 <span [class]="'px-2 py-1 text-xs font-medium rounded-full ' + getStatusColor(b.status)">
                   {{ b.status }}

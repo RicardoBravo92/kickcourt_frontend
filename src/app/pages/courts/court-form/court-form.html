@@ -1,0 +1,80 @@
+<div class="max-w-2xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-gray-900 mb-6">
+    {{ isEdit ? ('fields.editField' | translate) : ('fields.newField' | translate) }}
+  </h1>
+
+  @if (error) {
+    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">{{ error }}</div>
+  }
+
+  <form (ngSubmit)="onSubmit()" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ 'fields.name' | translate }}</label>
+      <input type="text" [(ngModel)]="court.name" name="name" required
+             class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500" />
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ 'fields.sport' | translate }}</label>
+        <select [(ngModel)]="court.sport_type" name="sport_type" (change)="court.surface = filteredSurfaces[0]?.value || 'SYNTHETIC'"
+                class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500">
+          @for (st of sportTypes; track st.value) {
+            <option [ngValue]="st.value">{{ st.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ 'fields.surface' | translate }}</label>
+        <select [(ngModel)]="court.surface" name="surface"
+                class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500">
+          @for (s of filteredSurfaces; track s.value) {
+            <option [ngValue]="s.value">{{ s.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ 'fields.pricePerHourCurrency' | translate }}</label>
+        <input type="number" [(ngModel)]="court.price_per_hour" name="price_per_hour" required min="0" step="0.01"
+               class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">{{ 'fields.playersPerSide' | translate }}</label>
+        <select [(ngModel)]="court.players_per_side" name="players_per_side"
+                class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500">
+          @for (opt of availablePlayers; track opt.value) {
+            <option [ngValue]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <input type="checkbox" [(ngModel)]="court.is_active" name="is_active" id="is_active"
+             class="h-4 w-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500" />
+      <label for="is_active" class="text-sm text-gray-700">{{ 'fields.activeField' | translate }}</label>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">{{ 'fields.description' | translate }}</label>
+      <textarea [(ngModel)]="court.description" name="description" rows="3"
+                class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500"></textarea>
+    </div>
+
+    <div class="flex gap-4 pt-4">
+      <button type="submit" [disabled]="loading"
+              class="bg-emerald-600 text-white py-2.5 px-6 rounded-xl hover:bg-emerald-700 disabled:opacity-50 font-medium transition-colors">
+        @if (loading) { {{ 'fields.saving' | translate }} } @else { {{ isEdit ? ('fields.updateBtn' | translate) : ('fields.createBtn' | translate) }} }
+      </button>
+      <a [routerLink]="isEdit ? ['/admin'] : ['/admin']"
+         class="border border-gray-300 text-gray-700 py-2.5 px-6 rounded-xl hover:bg-gray-50 font-medium transition-colors">
+        {{ 'fields.cancelBtn' | translate }}
+      </a>
+    </div>
+  </form>
+</div>

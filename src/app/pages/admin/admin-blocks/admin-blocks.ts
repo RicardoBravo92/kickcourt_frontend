@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { FieldService } from '../../../services/field';
-import { FieldBlockService } from '../../../services/field-block';
+import { CourtService } from '../../../services/court';
+import { CourtBlockService } from '../../../services/court-block';
 import { ToastService } from '../../../services/toast';
-import { Field, FieldBlock } from '../../../models/field';
+import { Court, CourtBlock } from '../../../models/court';
 import { TranslatePipe } from '../../../pipes/translate';
 
 @Component({
@@ -14,18 +14,18 @@ import { TranslatePipe } from '../../../pipes/translate';
   styleUrl: './admin-blocks.css',
 })
 export class AdminBlocks implements OnInit {
-  private fieldService = inject(FieldService);
-  private blockService = inject(FieldBlockService);
+  private courtService = inject(CourtService);
+  private blockService = inject(CourtBlockService);
   private toast = inject(ToastService);
 
-  fields: Field[] = [];
-  selectedFieldId: number | null = null;
-  blocks: FieldBlock[] = [];
+  courts: Court[] = [];
+  selectedCourtId: number | null = null;
+  blocks: CourtBlock[] = [];
   loading = false;
   saving = false;
   error = '';
 
-  newBlock: Partial<FieldBlock> = {
+  newBlock: Partial<CourtBlock> = {
     date: '',
     start_time: '08:00',
     end_time: '22:00',
@@ -33,18 +33,18 @@ export class AdminBlocks implements OnInit {
   };
 
   ngOnInit() {
-    this.fieldService.getFields().subscribe({
-      next: (f) => (this.fields = f),
+    this.courtService.getCourts().subscribe({
+      next: (c) => (this.courts = c),
     });
   }
 
-  onFieldChange() {
-    if (!this.selectedFieldId) {
+  onCourtChange() {
+    if (!this.selectedCourtId) {
       this.blocks = [];
       return;
     }
     this.loading = true;
-    this.blockService.getBlocks(this.selectedFieldId).subscribe({
+    this.blockService.getBlocks(this.selectedCourtId).subscribe({
       next: (b) => {
         this.blocks = b;
         this.loading = false;
@@ -55,7 +55,7 @@ export class AdminBlocks implements OnInit {
 
   addBlock() {
     if (
-      !this.selectedFieldId ||
+      !this.selectedCourtId ||
       !this.newBlock.date ||
       !this.newBlock.start_time ||
       !this.newBlock.end_time
@@ -68,9 +68,9 @@ export class AdminBlocks implements OnInit {
     }
     this.saving = true;
     this.error = '';
-    const block: Partial<FieldBlock> = {
+    const block: Partial<CourtBlock> = {
       ...this.newBlock,
-      field: this.selectedFieldId,
+      court: this.selectedCourtId,
     };
     this.blockService.createBlock(block).subscribe({
       next: (b) => {
@@ -79,9 +79,9 @@ export class AdminBlocks implements OnInit {
         this.saving = false;
         this.toast.success('toast.blockCreated');
       },
-      error: (err) => {
+      error: () => {
         this.saving = false;
-        this.error = err.error?.detail || 'Error creating block';
+        this.error = 'Error creating block';
         this.toast.error('toast.blockError');
       },
     });
@@ -93,8 +93,8 @@ export class AdminBlocks implements OnInit {
         this.blocks = this.blocks.filter((b) => b.id !== id);
         this.toast.success('toast.blockDeleted');
       },
-      error: (err) => {
-        this.error = err.error?.detail || 'Error deleting block';
+      error: () => {
+        this.error = 'Error deleting block';
         this.toast.error('toast.blockError');
       },
     });

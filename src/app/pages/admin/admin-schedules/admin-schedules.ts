@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { FieldService } from '../../../services/field';
-import { FieldScheduleService } from '../../../services/field-schedule';
+import { CourtService } from '../../../services/court';
+import { CourtScheduleService } from '../../../services/court-schedule';
 import { ToastService } from '../../../services/toast';
-import { Field, FieldSchedule } from '../../../models/field';
+import { Court, CourtSchedule } from '../../../models/court';
 import { TranslatePipe } from '../../../pipes/translate';
 
 @Component({
@@ -14,13 +14,13 @@ import { TranslatePipe } from '../../../pipes/translate';
   styleUrl: './admin-schedules.css',
 })
 export class AdminSchedules implements OnInit {
-  private fieldService = inject(FieldService);
-  private scheduleService = inject(FieldScheduleService);
+  private courtService = inject(CourtService);
+  private scheduleService = inject(CourtScheduleService);
   private toast = inject(ToastService);
 
-  fields: Field[] = [];
-  selectedFieldId: number | null = null;
-  schedules: FieldSchedule[] = [];
+  courts: Court[] = [];
+  selectedCourtId: number | null = null;
+  schedules: CourtSchedule[] = [];
   loading = false;
   saving = false;
   error = '';
@@ -36,18 +36,18 @@ export class AdminSchedules implements OnInit {
   ];
 
   ngOnInit() {
-    this.fieldService.getFields().subscribe({
-      next: (f) => (this.fields = f),
+    this.courtService.getCourts().subscribe({
+      next: (c) => (this.courts = c),
     });
   }
 
-  onFieldChange() {
-    if (!this.selectedFieldId) {
+  onCourtChange() {
+    if (!this.selectedCourtId) {
       this.schedules = [];
       return;
     }
     this.loading = true;
-    this.scheduleService.getSchedules(this.selectedFieldId).subscribe({
+    this.scheduleService.getSchedules(this.selectedCourtId).subscribe({
       next: (s) => {
         this.schedules = s;
         this.loading = false;
@@ -56,7 +56,7 @@ export class AdminSchedules implements OnInit {
     });
   }
 
-  getScheduleForDay(day: number): FieldSchedule | undefined {
+  getScheduleForDay(day: number): CourtSchedule | undefined {
     return this.schedules.find(s => s.day_of_week === day);
   }
 
@@ -75,9 +75,9 @@ export class AdminSchedules implements OnInit {
   }
 
   addSchedule(day: number) {
-    if (!this.selectedFieldId) return;
-    const newSchedule: Partial<FieldSchedule> = {
-      field: this.selectedFieldId,
+    if (!this.selectedCourtId) return;
+    const newSchedule: Partial<CourtSchedule> = {
+      court: this.selectedCourtId,
       day_of_week: day,
       open_time: '08:00',
       close_time: '22:00',
@@ -88,23 +88,23 @@ export class AdminSchedules implements OnInit {
         this.schedules.push(s);
         this.toast.success('toast.scheduleCreated');
       },
-      error: (err) => {
-        this.error = err.error?.detail || 'Error creating schedule';
+      error: () => {
+        this.error = 'Error creating schedule';
         this.toast.error('toast.scheduleError');
       },
     });
   }
 
-  saveSchedule(schedule: FieldSchedule) {
+  saveSchedule(schedule: CourtSchedule) {
     this.saving = true;
     this.scheduleService.updateSchedule(schedule.id, schedule).subscribe({
       next: () => {
         this.saving = false;
         this.toast.success('toast.scheduleUpdated');
       },
-      error: (err) => {
+      error: () => {
         this.saving = false;
-        this.error = err.error?.detail || 'Error saving schedule';
+        this.error = 'Error saving schedule';
         this.toast.error('toast.scheduleError');
       },
     });
@@ -116,8 +116,8 @@ export class AdminSchedules implements OnInit {
         this.schedules = this.schedules.filter(s => s.id !== id);
         this.toast.success('toast.scheduleDeleted');
       },
-      error: (err) => {
-        this.error = err.error?.detail || 'Error deleting schedule';
+      error: () => {
+        this.error = 'Error deleting schedule';
         this.toast.error('toast.scheduleError');
       },
     });

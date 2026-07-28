@@ -2,6 +2,7 @@
   "nav": {
     "fields": "Canchas",
     "myBookings": "Mis Reservas",
+    "vendor": "Vendedor",
     "admin": "Admin",
     "login": "Iniciar Sesión",
     "register": "Registrarse",
@@ -63,7 +64,9 @@
     "cancelBtn": "Cancelar",
     "saving": "Guardando...",
     "saveError": "Error al guardar",
-    "confirmDelete": "¿Eliminar esta cancha?"
+    "confirmDelete": "¿Eliminar esta cancha?",
+    "sport": "Deporte",
+    "playersPerSide": "Jugadores por lado"
   },
   "bookings": {
     "createTitle": "Reservar Cancha",
@@ -89,7 +92,10 @@
     "confirmCancel": "¿Cancelar esta reserva?",
     "cancelledSuccess": "Reserva cancelada",
     "bookedSuccess": "Reserva creada",
-    "id": "ID"
+    "id": "ID",
+    "court": "Cancha",
+    "vendor": "Vendedor",
+    "commission": "Comisión"
   },
   "admin": {
     "title": "Panel Admin",
@@ -112,7 +118,18 @@
     "schedulesDesc": "Gestionar horarios de apertura semanales",
     "blocks": "Bloqueos de Mantenimiento",
     "blocksDesc": "Bloquear horarios para mantenimiento",
-    "bookingsDesc": "Ver y gestionar todas las reservas"
+    "bookingsDesc": "Ver y gestionar todas las reservas",
+    "vendors": "Vendedores",
+    "vendorName": "Nombre",
+    "businessName": "Nombre Comercial",
+    "email": "Email",
+    "commission": "Comisión",
+    "isApproved": "Aprobado",
+    "approved": "Aprobado",
+    "pending": "Pendiente",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "noVendors": "No hay vendedores registrados"
   },
   "common": {
     "loading": "Cargando...",
@@ -253,7 +270,22 @@
     "pending": "Pendiente",
     "confirmed": "Confirmada",
     "cancelled": "Cancelada",
-    "completed": "Completada"
+    "completed": "Completada",
+    "monthRevenue": "Ingresos del Mes",
+    "status": "Estado"
+  },
+  "vendor": {
+    "dashboard": "Panel de Vendedor",
+    "newCourt": "+ Nueva Cancha",
+    "totalCourts": "Mis Canchas",
+    "totalBookings": "Total Reservas",
+    "monthBookings": "Reservas del Mes",
+    "totalRevenue": "Ingresos Totales",
+    "monthCommission": "Comisión del Mes",
+    "myCourts": "Mis Canchas",
+    "noCourts": "No tienes canchas aún",
+    "createFirst": "Crea tu primera cancha",
+    "quickLinks": "Accesos Rápidos"
   },
   "toast": {
     "loginSuccess": "Sesión iniciada correctamente",
@@ -281,6 +313,9 @@
     "blockCreated": "Bloqueo creado",
     "blockDeleted": "Bloqueo eliminado",
     "blockError": "Error al guardar el bloqueo",
-    "csvExported": "Exportación CSV abierta"
+    "csvExported": "Exportación CSV abierta",
+    "vendorApproved": "Vendedor aprobado correctamente",
+    "vendorRejected": "Vendedor rechazado",
+    "vendorError": "Error al actualizar el vendedor"
   }
 }

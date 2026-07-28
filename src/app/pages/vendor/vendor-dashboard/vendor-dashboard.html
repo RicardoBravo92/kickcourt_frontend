@@ -1,0 +1,46 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">{{ 'vendor.dashboard' | translate }}</h1>
+    <a routerLink="/vendor/courts/new"
+       class="bg-emerald-600 text-white py-2.5 px-4 rounded-xl hover:bg-emerald-700 font-medium text-sm transition-colors">
+      {{ 'vendor.newCourt' | translate }}
+    </a>
+  </div>
+
+  @if (loading) {
+    <div class="text-center py-12 text-gray-500">{{ 'common.loading' | translate }}</div>
+  } @else if (stats) {
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <p class="text-sm text-gray-500">{{ 'vendor.totalCourts' | translate }}</p>
+        <p class="text-2xl font-bold text-gray-900">{{ stats.total_courts }}</p>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <p class="text-sm text-gray-500">{{ 'vendor.totalBookings' | translate }}</p>
+        <p class="text-2xl font-bold text-blue-600">{{ stats.total_bookings }}</p>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <p class="text-sm text-gray-500">{{ 'vendor.monthBookings' | translate }}</p>
+        <p class="text-2xl font-bold text-purple-600">{{ stats.month_bookings }}</p>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <p class="text-sm text-gray-500">{{ 'vendor.totalRevenue' | translate }}</p>
+        <p class="text-2xl font-bold text-emerald-600">\${{ stats.total_revenue | number:'1.0-0' }}</p>
+      </div>
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+        <p class="text-sm text-gray-500">{{ 'vendor.monthCommission' | translate }}</p>
+        <p class="text-2xl font-bold text-orange-500">\${{ stats.month_commission | number:'1.0-0' }}</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ 'vendor.quickLinks' | translate }}</h2>
+      <div class="flex flex-wrap gap-4 mt-4">
+        <a routerLink="/vendor/courts"
+           class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors">
+          {{ 'vendor.myCourts' | translate }}
+        </a>
+      </div>
+    </div>
+  }
+</div>
