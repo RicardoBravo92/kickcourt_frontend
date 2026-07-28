@@ -85,7 +85,9 @@
     "confirmCancel": "Cancel this booking?",
     "cancelledSuccess": "Booking cancelled",
     "bookedSuccess": "Booking created",
-    "id": "ID"
+    "id": "ID",
+    "complete": "Complete",
+    "completedSuccess": "Booking completed"
   },
   "admin": {
     "title": "Admin Panel",

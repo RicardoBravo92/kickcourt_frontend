@@ -19,6 +19,31 @@
     </div>
   } @else {
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-100 flex flex-wrap gap-3 items-center">
+        <select [(ngModel)]="activeFilters.sport_type" (change)="loadCourts()"
+                class="px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-emerald-500 focus:border-emerald-500">
+          <option value="">{{ 'fields.type' | translate }}</option>
+          @for (sport of sportTypes; track sport) {
+            <option [value]="sport">{{ getSportName(sport) }}</option>
+          }
+        </select>
+        <select [(ngModel)]="activeFilters.surface" (change)="loadCourts()"
+                class="px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-emerald-500 focus:border-emerald-500">
+          <option value="">{{ 'fields.surface' | translate }}</option>
+          @for (surface of surfaces; track surface) {
+            <option [value]="surface">{{ getSurfaceName(surface) }}</option>
+          }
+        </select>
+        <select [(ngModel)]="activeFilters.is_active" (change)="loadCourts()"
+                class="px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-emerald-500 focus:border-emerald-500">
+          <option value="">{{ 'fields.status' | translate }}</option>
+          <option value="true">{{ 'fields.active' | translate }}</option>
+          <option value="false">{{ 'fields.inactive' | translate }}</option>
+        </select>
+        <button (click)="clearFilters()" class="text-sm text-emerald-600 hover:text-emerald-700 font-medium">
+          {{ 'fields.clear' | translate }}
+        </button>
+      </div>
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>

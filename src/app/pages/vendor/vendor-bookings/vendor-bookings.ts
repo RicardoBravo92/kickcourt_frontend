@@ -18,19 +18,29 @@ export class VendorBookings implements OnInit {
   bookings: Booking[] = [];
   loading = true;
 
+  statuses = ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'];
+  filterStatus = '';
+  filterDate = '';
+
   ngOnInit() {
     this.loadBookings();
   }
 
   loadBookings() {
     this.loading = true;
-    this.bookingService.getBookings().subscribe({
+    this.bookingService.getBookings({ status: this.filterStatus || undefined, date: this.filterDate || undefined }).subscribe({
       next: (b) => {
         this.bookings = b;
         this.loading = false;
       },
       error: () => (this.loading = false),
     });
+  }
+
+  clearFilters() {
+    this.filterStatus = '';
+    this.filterDate = '';
+    this.loadBookings();
   }
 
   cancelBooking(id: number) {
@@ -40,6 +50,16 @@ export class VendorBookings implements OnInit {
         this.loadBookings();
       },
       error: () => this.toast.error('toast.cancelError'),
+    });
+  }
+
+  completeBooking(id: number) {
+    this.bookingService.completeBooking(id).subscribe({
+      next: () => {
+        this.toast.success('toast.bookingCompleted');
+        this.loadBookings();
+      },
+      error: () => this.toast.error('toast.completeError'),
     });
   }
 

@@ -85,7 +85,9 @@
     "confirmCancel": "¿Cancelar esta reserva?",
     "cancelledSuccess": "Reserva cancelada",
     "bookedSuccess": "Reserva creada",
-    "id": "ID"
+    "id": "ID",
+    "complete": "Completar",
+    "completedSuccess": "Reserva completada"
   },
   "admin": {
     "title": "Panel Admin",

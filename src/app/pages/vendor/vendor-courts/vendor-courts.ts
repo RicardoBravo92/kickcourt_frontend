@@ -19,14 +19,28 @@ export class VendorCourts implements OnInit {
   courts: Court[] = [];
   loading = true;
 
+  sportTypes = ['FOOTBALL', 'PADEL', 'TENNIS', 'BASKETBALL', 'VOLLEYBALL', 'HOCKEY'];
+  surfaces = ['SYNTHETIC', 'NATURAL', 'INDOOR', 'CLAY', 'GRASS', 'HARD', 'WOOD', 'SAND'];
+  activeFilters: Record<string, string> = { sport_type: '', surface: '', is_active: '' };
+
   ngOnInit() {
-    this.courtService.getCourts({}).subscribe({
+    this.loadCourts();
+  }
+
+  loadCourts() {
+    this.loading = true;
+    this.courtService.getCourts(this.activeFilters).subscribe({
       next: (courts) => {
         this.courts = courts;
         this.loading = false;
       },
       error: () => (this.loading = false),
     });
+  }
+
+  clearFilters() {
+    this.activeFilters = { sport_type: '', surface: '', is_active: '' };
+    this.loadCourts();
   }
 
   getSportName(sport: string): string {

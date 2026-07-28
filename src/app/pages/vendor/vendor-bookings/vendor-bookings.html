@@ -10,6 +10,20 @@
     <div class="text-center py-12 text-gray-500">{{ 'admin.noBookings' | translate }}</div>
   } @else {
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-100 flex flex-wrap gap-3 items-center">
+        <select [(ngModel)]="filterStatus" (change)="loadBookings()"
+                class="px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-emerald-500 focus:border-emerald-500">
+          <option value="">{{ 'fields.status' | translate }}</option>
+          @for (s of statuses; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        <input type="date" [(ngModel)]="filterDate" (ngModelChange)="loadBookings()" ... />
+
+        <button (click)="clearFilters()" class="text-sm text-emerald-600 hover:text-emerald-700 font-medium">
+          {{ 'fields.clear' | translate }}
+        </button>
+      </div>
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
@@ -40,11 +54,14 @@
               <td class="px-6 py-4 text-sm font-medium text-gray-900">\${{ b.total_price }}</td>
               <td class="px-6 py-4 text-sm text-gray-600">\${{ b.commission || '0.00' }}</td>
               <td class="px-6 py-4 text-sm space-x-2">
-                @if (b.status !== 'CANCELLED') {
-                  <button (click)="cancelBooking(b.id!)" class="text-red-600 hover:text-red-800 font-medium">{{ 'admin.delete' | translate }}</button>
-                }
-                <button (click)="restoreBooking(b.id!)" class="text-blue-600 hover:text-blue-800 font-medium">{{ 'admin.restore' | translate }}</button>
-              </td>
+                 @if (b.status !== 'CANCELLED' && b.status !== 'COMPLETED') {
+                   <button (click)="cancelBooking(b.id!)" class="text-red-600 hover:text-red-800 font-medium">{{ 'admin.delete' | translate }}</button>
+                   <button (click)="completeBooking(b.id!)" class="text-emerald-600 hover:text-emerald-800 font-medium">{{ 'bookings.complete' | translate }}</button>
+                 }
+                 @if (b.status === 'CANCELLED') {
+                   <button (click)="restoreBooking(b.id!)" class="text-blue-600 hover:text-blue-800 font-medium">{{ 'admin.restore' | translate }}</button>
+                 }
+               </td>
             </tr>
           }
         </tbody>
