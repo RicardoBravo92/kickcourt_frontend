@@ -1,0 +1,88 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">{{ 'blocks.title' | translate }}</h1>
+    <a routerLink="/admin" class="text-green-600 hover:text-green-700 font-medium text-sm">{{ 'admin.backToPanel' | translate }}</a>
+  </div>
+
+  <div class="mb-6">
+    <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'blocks.selectField' | translate }}</label>
+    <select [(ngModel)]="selectedFieldId" (change)="onFieldChange()"
+            class="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+      <option [ngValue]="null">{{ 'fields.allF' | translate }}</option>
+      @for (field of fields; track field.id) {
+        <option [ngValue]="field.id">{{ field.name }}</option>
+      }
+    </select>
+  </div>
+
+  @if (error) {
+    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-md text-sm mb-4">{{ error }}</div>
+  }
+
+  @if (selectedFieldId) {
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">{{ 'blocks.addNew' | translate }}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'blocks.date' | translate }}</label>
+          <input type="date" [(ngModel)]="newBlock.date"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'blocks.startTime' | translate }}</label>
+          <input type="time" [(ngModel)]="newBlock.start_time"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'blocks.endTime' | translate }}</label>
+          <input type="time" [(ngModel)]="newBlock.end_time"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'blocks.reason' | translate }}</label>
+          <input type="text" [(ngModel)]="newBlock.reason" placeholder="{{ 'blocks.reasonPlaceholder' | translate }}"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500" />
+        </div>
+      </div>
+      <button (click)="addBlock()" [disabled]="saving || !newBlock.date"
+              class="mt-4 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 font-medium text-sm">
+        @if (saving) { {{ 'common.loading' | translate }} } @else { {{ 'blocks.addBtn' | translate }} }
+      </button>
+    </div>
+
+    @if (loading) {
+      <div class="text-center py-12 text-gray-500">{{ 'common.loading' | translate }}</div>
+    } @else if (blocks.length === 0) {
+      <div class="text-center py-12 text-gray-500">{{ 'blocks.noBlocks' | translate }}</div>
+    } @else {
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'blocks.date' | translate }}</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'blocks.timeRange' | translate }}</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'blocks.reason' | translate }}</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'blocks.createdBy' | translate }}</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ 'admin.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            @for (block of blocks; track block.id) {
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ block.date }}</td>
+                <td class="px-6 py-4 text-sm text-gray-600">{{ block.start_time }} - {{ block.end_time }}</td>
+                <td class="px-6 py-4 text-sm text-gray-600">{{ block.reason || '-' }}</td>
+                <td class="px-6 py-4 text-sm text-gray-600">{{ block.created_by || '-' }}</td>
+                <td class="px-6 py-4 text-sm">
+                  <button (click)="deleteBlock(block.id)" class="text-red-600 hover:text-red-800">{{ 'common.delete' | translate }}</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  } @else {
+    <div class="text-center py-12 text-gray-500">{{ 'blocks.selectFieldPrompt' | translate }}</div>
+  }
+</div>

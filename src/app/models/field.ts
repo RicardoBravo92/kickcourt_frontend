@@ -8,3 +8,24 @@ export interface Field {
   description?: string;
   photo?: string;
 }
+
+export interface FieldSchedule {
+  id: number;
+  field: number;
+  day_of_week: number;
+  day_of_week_display: string;
+  open_time: string;
+  close_time: string;
+  is_active: boolean;
+}
+
+export interface FieldBlock {
+  id: number;
+  field: number;
+  date: string;
+  start_time: string;
+  end_time: string;
+  reason: string;
+  created_by?: string;
+  created_at?: string;
+}

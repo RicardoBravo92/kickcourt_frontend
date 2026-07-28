@@ -14,6 +14,8 @@ export const routes: Routes = [
   { path: 'bookings/:id', loadComponent: () => import('./pages/bookings/booking-detail/booking-detail').then(m => m.BookingDetail), canActivate: [authGuard] },
   { path: 'admin', loadComponent: () => import('./pages/admin/admin-dashboard/admin-dashboard').then(m => m.AdminDashboard), canActivate: [authGuard, adminGuard] },
   { path: 'admin/bookings', loadComponent: () => import('./pages/admin/admin-bookings/admin-bookings').then(m => m.AdminBookings), canActivate: [authGuard, adminGuard] },
+  { path: 'admin/schedules', loadComponent: () => import('./pages/admin/admin-schedules/admin-schedules').then(m => m.AdminSchedules), canActivate: [authGuard, adminGuard] },
+  { path: 'admin/blocks', loadComponent: () => import('./pages/admin/admin-blocks/admin-blocks').then(m => m.AdminBlocks), canActivate: [authGuard, adminGuard] },
   { path: 'admin/fields/new', loadComponent: () => import('./pages/fields/field-form/field-form').then(m => m.FieldForm), canActivate: [authGuard, adminGuard] },
   { path: 'admin/fields/:id/edit', loadComponent: () => import('./pages/fields/field-form/field-form').then(m => m.FieldForm), canActivate: [authGuard, adminGuard] },
   { path: '**', redirectTo: 'fields' },
