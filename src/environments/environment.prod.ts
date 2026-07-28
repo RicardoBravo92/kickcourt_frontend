@@ -1,4 +1,6 @@
+const w = (window as any).__env || {};
+
 export const environment = {
   production: true,
-  apiUrl: 'https://api.soccerdev.com/api',
+  apiUrl: w.apiUrl || 'https://api.soccerdev.com',
 };

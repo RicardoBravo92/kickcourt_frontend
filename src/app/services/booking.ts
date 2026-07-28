@@ -23,7 +23,7 @@ interface PaginatedResponse<T> {
 })
 export class BookingService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/bookings/`;
+  private apiUrl = `${environment.apiUrl}/api/bookings/`;
 
   private extractResults<T>(res: PaginatedResponse<T> | T[]): T[] {
     return Array.isArray(res) ? res : res.results;

@@ -9,7 +9,7 @@ import { AuthResponse, User, UserRole } from '../models/user';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}`;
+  private apiUrl = `${environment.apiUrl}/api`;
   private refreshTokenInProgress = false;
   private refreshTokenSubject = new BehaviorSubject<string | null>(null);
 

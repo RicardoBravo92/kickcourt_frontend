@@ -37,7 +37,7 @@ export interface FieldAvailability {
 })
 export class FieldService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/fields/`;
+  private apiUrl = `${environment.apiUrl}/api/fields/`;
 
   getFields(filters?: FieldFilters): Observable<Field[]> {
     let params = new HttpParams();
