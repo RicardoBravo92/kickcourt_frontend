@@ -31,7 +31,10 @@
           {{ i18n.lang() === 'es' ? 'EN' : 'ES' }}
         </button>
         @if (authService.isAuthenticated()) {
-          <span class="text-sm text-green-200">{{ authService.currentUser()?.username }}</span>
+          <span class="text-sm text-green-200">{{ 'nav.profile' | translate }}</span>
+          <a routerLink="/profile" class="text-sm text-white font-medium hover:text-green-200 transition-colors">
+            {{ authService.currentUser()?.username }}
+          </a>
           <button (click)="logout()"
                   class="px-4 py-2 rounded-md text-sm font-medium bg-green-700 hover:bg-green-800 transition-colors">
             {{ 'nav.logout' | translate }}

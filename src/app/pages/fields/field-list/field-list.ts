@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FieldService, FieldFilters } from '../../../services/field';
+import { AuthService } from '../../../services/auth';
 import { Field } from '../../../models/field';
 import { TranslatePipe } from '../../../pipes/translate';
 
@@ -13,11 +14,14 @@ import { TranslatePipe } from '../../../pipes/translate';
 })
 export class FieldList implements OnInit {
   private fieldService = inject(FieldService);
+  public authService = inject(AuthService);
 
   fields: Field[] = [];
   loading = true;
   filters: FieldFilters = {};
   totalCount = 0;
+
+  activeFaqIndex: number | null = null;
 
   fieldTypes = [
     { value: 5 as const, label: '5 vs 5' },
@@ -49,11 +53,23 @@ export class FieldList implements OnInit {
 
   applyFilters() {
     this.loadFields();
+    this.scrollToCatalog();
   }
 
   clearFilters() {
     this.filters = {};
     this.loadFields();
+  }
+
+  toggleFaq(index: number) {
+    this.activeFaqIndex = this.activeFaqIndex === index ? null : index;
+  }
+
+  scrollToCatalog() {
+    const catalogElement = document.getElementById('catalog-section');
+    if (catalogElement) {
+      catalogElement.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   getFieldTypeName(type: number): string {

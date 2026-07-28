@@ -29,6 +29,18 @@ export class AuthService {
     return this.http.post<User>(`${this.apiUrl}/register/`, userData);
   }
 
+  getProfile(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/profile/`);
+  }
+
+  updateProfile(data: Partial<User>): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/profile/`, data);
+  }
+
+  changePassword(data: { old_password: string; new_password: string; new_password_confirm: string }): Observable<{ status: string }> {
+    return this.http.post<{ status: string }>(`${this.apiUrl}/profile/change-password/`, data);
+  }
+
   refreshToken(): Observable<string> {
     const refresh = this.getRefreshToken();
     if (!refresh) {
