@@ -2,6 +2,7 @@ import { Component, inject, OnInit, OnDestroy, AfterViewInit, ElementRef, viewCh
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Meta, Title } from '@angular/platform-browser';
 import { TranslatePipe } from '../../../pipes/translate';
 import { DashboardService, DashboardStats } from '../../../services/dashboard';
 import { CourtService } from '../../../services/court';
@@ -21,6 +22,8 @@ export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
   private dashboardService = inject(DashboardService);
   private courtService = inject(CourtService);
   private toast = inject(ToastService);
+  private meta = inject(Meta);
+  private title = inject(Title);
 
   stats: DashboardStats | null = null;
   courts: Court[] = [];
@@ -43,6 +46,15 @@ export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   ngOnInit() {
+    this.title.setTitle('Admin Dashboard - KickCourt');
+    this.meta.updateTag({ name: 'description', content: 'Manage courts, bookings and users from the admin dashboard.' });
+    this.meta.updateTag({ property: 'og:title', content: 'Admin Dashboard - KickCourt' });
+    this.meta.updateTag({ property: 'og:description', content: 'Manage courts, bookings and users from the admin dashboard.' });
+    this.meta.updateTag({ property: 'og:url', content: 'https://kickcourt.com/admin' });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
+    this.meta.updateTag({ name: 'twitter:title', content: 'Admin Dashboard - KickCourt' });
+    this.meta.updateTag({ name: 'twitter:description', content: 'Manage courts, bookings and users from the admin dashboard.' });
     this.courtService.getCourts().subscribe({
       next: (c) => (this.courts = c),
     });

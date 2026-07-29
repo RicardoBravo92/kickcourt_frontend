@@ -59,7 +59,8 @@
     "cancelBtn": "Cancel",
     "saving": "Saving...",
     "saveError": "Error saving",
-    "confirmDelete": "Delete this field?"
+    "confirmDelete": "Delete this field?",
+    "vendor": "Vendor"
   },
   "bookings": {
     "createTitle": "Book Field",
@@ -71,6 +72,7 @@
     "booking": "Book",
     "cancelling": "Booking...",
     "createError": "Error creating booking",
+    "vendorCannotBook": "Vendors cannot create bookings",
     "myBookingsTitle": "My Bookings",
     "noBookings": "You have no bookings yet",
     "exploreFields": "Explore Fields",
@@ -115,5 +117,17 @@
     "delete": "Delete",
     "edit": "Edit",
     "back": "Back"
+  },
+  "vendor": {
+    "myCourts": "My Courts",
+    "newCourt": "+ New Court",
+    "createFirst": "Create your first court",
+    "noCourts": "No courts yet",
+    "dashboard": "Vendor Dashboard",
+    "myBookings": "My Bookings",
+    "noVendor": "Vendor not found",
+    "institutionNumber": "Institution Number",
+    "address": "Address",
+    "phone": "Phone"
   }
 }

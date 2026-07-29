@@ -1,6 +1,10 @@
 export interface Booking {
   id?: number;
   user?: string;
+  user_id?: number;
+  user_email?: string;
+  user_phone?: string;
+  user_role?: string;
   court: number;
   court_name?: string;
   vendor_name?: string;

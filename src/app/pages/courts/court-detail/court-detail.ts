@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Meta, Title } from '@angular/platform-browser';
 import { CourtService, TimeSlot, CourtAvailability } from '../../../services/court';
 import { Court, SportType, SurfaceType } from '../../../models/court';
 import { TranslatePipe } from '../../../pipes/translate';
@@ -15,6 +16,8 @@ export class CourtDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private courtService = inject(CourtService);
+  private meta = inject(Meta);
+  private title = inject(Title);
 
   court: Court | null = null;
   loading = true;
@@ -27,6 +30,16 @@ export class CourtDetail implements OnInit {
     this.courtService.getCourtById(id).subscribe({
       next: (court: Court) => {
         this.court = court;
+        this.title.setTitle(`${court.name} - KickCourt`);
+        this.meta.updateTag({ name: 'description', content: court.description || `Book ${court.name} - ${this.getSportName(court.sport_type)} court on ${this.getSurfaceName(court.surface)}` });
+        this.meta.updateTag({ property: 'og:title', content: court.name });
+        this.meta.updateTag({ property: 'og:description', content: court.description || `Book ${court.name} - ${this.getSportName(court.sport_type)} court on ${this.getSurfaceName(court.surface)}` });
+        this.meta.updateTag({ property: 'og:image', content: court.photo || 'https://kickcourt.com/assets/img/og-default.png' });
+        this.meta.updateTag({ property: 'og:url', content: `https://kickcourt.com/courts/${court.id}` });
+        this.meta.updateTag({ property: 'og:type', content: 'article' });
+        this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+        this.meta.updateTag({ name: 'twitter:title', content: court.name });
+        this.meta.updateTag({ name: 'twitter:description', content: court.description || `Book ${court.name} - ${this.getSportName(court.sport_type)} court on ${this.getSurfaceName(court.surface)}` });
         this.loading = false;
         this.loadAvailability();
       },

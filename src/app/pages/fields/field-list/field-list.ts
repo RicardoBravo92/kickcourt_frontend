@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { Meta, Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FieldService, FieldFilters } from '../../../services/field';
@@ -15,6 +16,8 @@ import { TranslatePipe } from '../../../pipes/translate';
 export class FieldList implements OnInit {
   private fieldService = inject(FieldService);
   public authService = inject(AuthService);
+  private meta = inject(Meta);
+  private title = inject(Title);
 
   fields: Field[] = [];
   loading = true;
@@ -36,6 +39,15 @@ export class FieldList implements OnInit {
   ];
 
   ngOnInit() {
+    this.title.setTitle('Soccer Fields - KickCourt');
+    this.meta.updateTag({ name: 'description', content: 'Find available soccer fields, padel courts and more. Check availability and reserve your spot.' });
+    this.meta.updateTag({ property: 'og:title', content: 'Soccer Fields - KickCourt' });
+    this.meta.updateTag({ property: 'og:description', content: 'Find available soccer fields, padel courts and more. Check availability and reserve your spot.' });
+    this.meta.updateTag({ property: 'og:url', content: 'https://kickcourt.com/' });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: 'Soccer Fields - KickCourt' });
+    this.meta.updateTag({ name: 'twitter:description', content: 'Find available soccer fields, padel courts and more. Check availability and reserve your spot.' });
     this.loadFields();
   }
 

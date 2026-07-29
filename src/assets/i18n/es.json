@@ -59,7 +59,8 @@
     "cancelBtn": "Cancelar",
     "saving": "Guardando...",
     "saveError": "Error al guardar",
-    "confirmDelete": "¿Eliminar esta cancha?"
+    "confirmDelete": "¿Eliminar esta cancha?",
+    "vendor": "Vendedor"
   },
   "bookings": {
     "createTitle": "Reservar Cancha",
@@ -71,6 +72,7 @@
     "booking": "Reservar",
     "cancelling": "Reservando...",
     "createError": "Error al crear la reserva",
+    "vendorCannotBook": "Los vendedores no pueden crear reservas",
     "myBookingsTitle": "Mis Reservas",
     "noBookings": "No tienes reservas aún",
     "exploreFields": "Explorar Canchas",
@@ -115,5 +117,17 @@
     "delete": "Eliminar",
     "edit": "Editar",
     "back": "Volver"
+  },
+  "vendor": {
+    "myCourts": "Mis Canchas",
+    "newCourt": "+ Nueva Cancha",
+    "createFirst": "Crea tu primera cancha",
+    "noCourts": "No hay canchas aún",
+    "dashboard": "Panel de Vendedor",
+    "myBookings": "Mis Reservas",
+    "noVendor": "Vendedor no encontrado",
+    "institutionNumber": "Número de Institución",
+    "address": "Dirección",
+    "phone": "Teléfono"
   }
 }

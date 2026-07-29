@@ -9,6 +9,7 @@ export interface CourtFilters {
   surface?: string;
   is_active?: boolean;
   search?: string;
+  vendor?: number;
 }
 
 interface PaginatedResponse<T> {

@@ -1,7 +1,7 @@
 <div class="max-w-7xl mx-auto px-4 py-8">
   <div class="flex items-center justify-between mb-8">
     <h1 class="text-3xl font-bold text-gray-900">{{ 'vendor.dashboard' | translate }}</h1>
-    <a routerLink="/vendor/courts/new"
+    <a routerLink="/dashboard/courts/new"
        class="bg-emerald-600 text-white py-2.5 px-4 rounded-xl hover:bg-emerald-700 font-medium text-sm transition-colors">
       {{ 'vendor.newCourt' | translate }}
     </a>
@@ -36,19 +36,19 @@
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
       <h2 class="text-lg font-semibold text-gray-900 mb-2">{{ 'vendor.quickLinks' | translate }}</h2>
       <div class="flex flex-wrap gap-4 mt-4">
-        <a routerLink="/vendor/courts"
+        <a routerLink="/dashboard/courts"
            class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors">
           {{ 'vendor.myCourts' | translate }}
         </a>
-        <a routerLink="/vendor/schedules"
+        <a routerLink="/dashboard/schedules"
            class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors">
           {{ 'admin.schedules' | translate }}
         </a>
-        <a routerLink="/vendor/blocks"
+        <a routerLink="/dashboard/blocks"
            class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors">
           {{ 'admin.blocks' | translate }}
         </a>
-        <a routerLink="/vendor/bookings"
+        <a routerLink="/dashboard/bookings"
            class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-medium text-sm transition-colors">
           {{ 'vendor.myBookings' | translate }}
         </a>

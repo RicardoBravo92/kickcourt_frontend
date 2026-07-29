@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { CourtService } from '../../../services/court';
 import { AuthService } from '../../../services/auth';
 import { Court } from '../../../models/court';
@@ -8,7 +9,7 @@ import { TranslatePipe } from '../../../pipes/translate';
 
 @Component({
   selector: 'app-vendor-courts',
-  imports: [RouterLink, TranslatePipe],
+  imports: [RouterLink, FormsModule, TranslatePipe],
   templateUrl: './vendor-courts.html',
   styleUrl: './vendor-courts.css',
 })
@@ -21,7 +22,7 @@ export class VendorCourts implements OnInit {
 
   sportTypes = ['FOOTBALL', 'PADEL', 'TENNIS', 'BASKETBALL', 'VOLLEYBALL', 'HOCKEY'];
   surfaces = ['SYNTHETIC', 'NATURAL', 'INDOOR', 'CLAY', 'GRASS', 'HARD', 'WOOD', 'SAND'];
-  activeFilters: Record<string, string> = { sport_type: '', surface: '', is_active: '' };
+  activeFilters = { sport_type: '', surface: '', is_active: '' };
 
   ngOnInit() {
     this.loadCourts();
@@ -29,7 +30,13 @@ export class VendorCourts implements OnInit {
 
   loadCourts() {
     this.loading = true;
-    this.courtService.getCourts(this.activeFilters).subscribe({
+    const filters: Record<string, string | boolean | undefined> = {};
+    if (this.activeFilters['sport_type']) filters['sport_type'] = this.activeFilters['sport_type'];
+    if (this.activeFilters['surface']) filters['surface'] = this.activeFilters['surface'];
+    if (this.activeFilters['is_active'] !== '') {
+      filters['is_active'] = this.activeFilters['is_active'] === 'true';
+    }
+    this.courtService.getCourts(filters).subscribe({
       next: (courts) => {
         this.courts = courts;
         this.loading = false;
@@ -39,7 +46,9 @@ export class VendorCourts implements OnInit {
   }
 
   clearFilters() {
-    this.activeFilters = { sport_type: '', surface: '', is_active: '' };
+    this.activeFilters['sport_type'] = '';
+    this.activeFilters['surface'] = '';
+    this.activeFilters['is_active'] = '';
     this.loadCourts();
   }
 

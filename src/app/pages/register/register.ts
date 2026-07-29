@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Meta, Title } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth';
 import { ToastService } from '../../services/toast';
 import { TranslatePipe } from '../../pipes/translate';
@@ -11,10 +12,12 @@ import { TranslatePipe } from '../../pipes/translate';
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
-export class Register {
+export class Register implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private toast = inject(ToastService);
+  private meta = inject(Meta);
+  private title = inject(Title);
 
   userData = {
     username: '',
@@ -25,6 +28,18 @@ export class Register {
   };
   error = '';
   loading = false;
+
+  ngOnInit() {
+    this.title.setTitle('Register - KickCourt');
+    this.meta.updateTag({ name: 'description', content: 'Create a KickCourt account to book soccer fields, padel courts, and more.' });
+    this.meta.updateTag({ property: 'og:title', content: 'Register - KickCourt' });
+    this.meta.updateTag({ property: 'og:description', content: 'Create a KickCourt account to book soccer fields, padel courts, and more.' });
+    this.meta.updateTag({ property: 'og:url', content: 'https://kickcourt.com/register' });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
+    this.meta.updateTag({ name: 'twitter:title', content: 'Register - KickCourt' });
+    this.meta.updateTag({ name: 'twitter:description', content: 'Create a KickCourt account to book soccer fields, padel courts, and more.' });
+  }
 
   onSubmit() {
     this.loading = true;

@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { BookingService } from '../../../services/booking';
 import { ToastService } from '../../../services/toast';
 import { Booking } from '../../../models/booking';
@@ -7,7 +8,7 @@ import { TranslatePipe } from '../../../pipes/translate';
 
 @Component({
   selector: 'app-vendor-bookings',
-  imports: [RouterLink, TranslatePipe],
+  imports: [RouterLink, FormsModule, TranslatePipe],
   templateUrl: './vendor-bookings.html',
   styleUrl: './vendor-bookings.css',
 })
@@ -18,8 +19,8 @@ export class VendorBookings implements OnInit {
   bookings: Booking[] = [];
   loading = true;
 
-  statuses = ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'];
-  filterStatus = '';
+  statuses: ('PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED')[] = ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'];
+  filterStatus: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED' | undefined;
   filterDate = '';
 
   ngOnInit() {
@@ -28,7 +29,7 @@ export class VendorBookings implements OnInit {
 
   loadBookings() {
     this.loading = true;
-    this.bookingService.getBookings({ status: this.filterStatus || undefined, date: this.filterDate || undefined }).subscribe({
+    this.bookingService.getBookings({ status: this.filterStatus, date: this.filterDate || undefined }).subscribe({
       next: (b) => {
         this.bookings = b;
         this.loading = false;
@@ -38,7 +39,7 @@ export class VendorBookings implements OnInit {
   }
 
   clearFilters() {
-    this.filterStatus = '';
+    this.filterStatus = undefined;
     this.filterDate = '';
     this.loadBookings();
   }

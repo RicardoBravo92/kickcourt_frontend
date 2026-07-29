@@ -43,6 +43,16 @@
             <span class="text-sm text-gray-500">{{ 'fields.description' | translate }}</span>
             <p class="mt-1 text-gray-700">{{ court.description }}</p>
           </div>
+        } @else {
+          <p class="text-gray-400 text-sm mt-6 italic">Cancha en excelentes condiciones lista para jugar.</p>
+        }
+        @if (court.vendor_name) {
+          <div class="mt-4 pt-4 border-t border-gray-100">
+            <span class="text-sm text-gray-500">{{ 'fields.vendor' | translate }}</span>
+            <a [routerLink]="['/dashboard/vendors', court.vendor]" class="text-emerald-600 hover:text-emerald-700 font-medium text-sm">
+              {{ court.vendor_name }}
+            </a>
+          </div>
         }
       </div>
     </div>

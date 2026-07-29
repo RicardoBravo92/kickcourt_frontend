@@ -4,6 +4,8 @@ export interface Vendor {
   business_name: string;
   description?: string;
   phone?: string;
+  address?: string;
+  institution_number?: string;
   is_approved?: boolean;
   commission_rate?: number;
   court_count?: number;
