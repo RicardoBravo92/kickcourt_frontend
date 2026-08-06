@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "node scripts/generate-runtime-env.js && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:soccer_frontend": "node dist/soccer_frontend/server/server.mjs"
