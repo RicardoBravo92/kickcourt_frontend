@@ -13,6 +13,7 @@
     "registerTitle": "Create Account",
     "registerSubtitle": "Sign up on kickcourt",
     "username": "Username",
+    "usernameOrEmail": "Username or email",
     "email": "Email",
     "phone": "Phone",
     "password": "Password",

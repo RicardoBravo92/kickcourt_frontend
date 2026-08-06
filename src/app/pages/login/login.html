@@ -16,6 +16,7 @@
         <div>
           <label for="username" class="block text-sm font-medium text-gray-700">{{ 'auth.username' | translate }}</label>
           <input id="username" type="text" [(ngModel)]="credentials.username" name="username" required
+                 placeholder="{{ 'auth.usernameOrEmail' | translate }}"
                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500" />
         </div>
         <div>
