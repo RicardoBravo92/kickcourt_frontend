@@ -17,6 +17,7 @@ export class VendorBookings implements OnInit {
   private toast = inject(ToastService);
 
   bookings: Booking[] = [];
+  selectedCustomer: Booking | null = null;
   loading = true;
 
   statuses: ('PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED')[] = ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'];
@@ -36,6 +37,10 @@ export class VendorBookings implements OnInit {
       },
       error: () => (this.loading = false),
     });
+  }
+
+  viewCustomer(booking: Booking) {
+    this.selectedCustomer = booking;
   }
 
   clearFilters() {
