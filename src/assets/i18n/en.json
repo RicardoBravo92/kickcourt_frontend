@@ -28,7 +28,15 @@
     "signIn": "Sign in",
     "wrongCredentials": "Wrong credentials",
     "registerError": "Registration error",
-    "logoutSuccess": "Logged out"
+    "logoutSuccess": "Logged out",
+    "forgotPassword": "Forgot password",
+    "forgotPasswordSubtitle": "Enter your email to receive a reset link",
+    "sendResetLink": "Send reset link",
+    "resetPassword": "Reset password",
+    "resetPasswordSubtitle": "Enter your new password",
+    "newPassword": "New password",
+    "resetPasswordBtn": "Reset password",
+    "backToLogin": "Back to login"
   },
   "fields": {
     "title": "Available Fields",

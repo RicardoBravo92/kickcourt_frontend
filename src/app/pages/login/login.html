@@ -31,6 +31,10 @@
         @if (loading) { {{ 'auth.loggingIn' | translate }} } @else { {{ 'auth.loginBtn' | translate }} }
       </button>
 
+      <p class="text-center text-sm">
+        <a routerLink="/forgot-password" class="font-medium text-green-600 hover:text-green-500">{{ 'auth.forgotPassword' | translate }}</a>
+      </p>
+
       <p class="text-center text-sm text-gray-600">
         {{ 'auth.noAccount' | translate }}
         <a routerLink="/register" class="font-medium text-green-600 hover:text-green-500 ml-1">{{ 'auth.signUp' | translate }}</a>

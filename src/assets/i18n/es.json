@@ -28,7 +28,15 @@
     "signIn": "Inicia sesión",
     "wrongCredentials": "Credenciales incorrectas",
     "registerError": "Error al registrarse",
-    "logoutSuccess": "Sesión cerrada"
+    "logoutSuccess": "Sesión cerrada",
+    "forgotPassword": "Olvidé mi contraseña",
+    "forgotPasswordSubtitle": "Ingresa tu email para recibir un enlace de recuperación",
+    "sendResetLink": "Enviar enlace",
+    "resetPassword": "Restablecer contraseña",
+    "resetPasswordSubtitle": "Ingresa tu nueva contraseña",
+    "newPassword": "Nueva contraseña",
+    "resetPasswordBtn": "Restablecer contraseña",
+    "backToLogin": "Volver al login"
   },
   "fields": {
     "title": "Canchas Disponibles",

@@ -7,6 +7,8 @@ export const routes: Routes = [
   { path: '', redirectTo: 'courts', pathMatch: 'full' },
   { path: 'login', loadComponent: () => import('./pages/login/login').then(m => m.Login) },
   { path: 'register', loadComponent: () => import('./pages/register/register').then(m => m.Register) },
+  { path: 'forgot-password', loadComponent: () => import('./pages/password/forgot-password').then(m => m.ForgotPassword) },
+  { path: 'reset-password', loadComponent: () => import('./pages/password/reset-password').then(m => m.ResetPassword) },
   { path: 'courts', loadComponent: () => import('./pages/courts/court-list/court-list').then(m => m.CourtList) },
   { path: 'courts/:id', loadComponent: () => import('./pages/courts/court-detail/court-detail').then(m => m.CourtDetail) },
   { path: 'courts/:id/book', loadComponent: () => import('./pages/bookings/booking-create/booking-create').then(m => m.BookingCreate), canActivate: [authGuard] },
