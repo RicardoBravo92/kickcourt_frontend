@@ -16,7 +16,18 @@ export class Navbar {
   i18n = inject(I18nService);
   private router = inject(Router);
 
+  menuOpen = false;
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  closeMenu() {
+    this.menuOpen = false;
+  }
+
   logout() {
+    this.menuOpen = false;
     this.authService.logout();
     this.router.navigate(['/login']);
   }

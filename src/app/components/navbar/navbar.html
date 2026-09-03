@@ -2,8 +2,8 @@
 <nav class="bg-emerald-700 text-white shadow-lg">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
-      <div class="flex items-center gap-8">
-        <a routerLink="/courts" class="text-xl font-bold tracking-tight hover:text-emerald-200 transition-colors">
+      <div class="flex items-center gap-4 sm:gap-8 min-w-0">
+        <a routerLink="/courts" (click)="closeMenu()" class="text-base sm:text-xl font-bold tracking-tight hover:text-emerald-200 transition-colors whitespace-nowrap">
           KickCourt
         </a>
         <div class="hidden md:flex items-center gap-4">
@@ -31,31 +31,88 @@
           }
         </div>
       </div>
-      <div class="flex items-center gap-4">
+      <div class="hidden md:flex items-center gap-2 sm:gap-4 shrink-0">
         <button (click)="i18n.toggleLang()"
-                class="px-3 py-1 rounded-md text-sm font-medium border border-white hover:bg-emerald-800 transition-colors">
+                class="px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm font-medium border border-white hover:bg-emerald-800 transition-colors">
           {{ i18n.lang() === 'es' ? 'EN' : 'ES' }}
         </button>
         @if (authService.isAuthenticated()) {
-          <a routerLink="/profile" class="text-sm text-emerald-200 hover:text-white transition-colors">
+          <a routerLink="/profile" class="text-xs sm:text-sm text-emerald-200 hover:text-white transition-colors whitespace-nowrap">
             {{ 'nav.profile' | translate }}
           </a>
+          <button (click)="logout()"
+                  class="px-2 sm:px-4 py-1 sm:py-2 rounded-md text-xs sm:text-sm font-medium bg-emerald-800 hover:bg-emerald-900 transition-colors">
+            {{ 'nav.logout' | translate }}
+          </button>
+        } @else {
+          <a routerLink="/login"
+             class="px-2 sm:px-4 py-1 sm:py-2 rounded-md text-xs sm:text-sm font-medium bg-white text-emerald-700 hover:bg-emerald-50 transition-colors whitespace-nowrap">
+            {{ 'nav.login' | translate }}
+          </a>
+          <a routerLink="/register"
+             class="px-2 sm:px-4 py-1 sm:py-2 rounded-md text-xs sm:text-sm font-medium border border-white text-white hover:bg-emerald-800 transition-colors whitespace-nowrap">
+            {{ 'nav.register' | translate }}
+          </a>
+        }
+      </div>
+      <button (click)="toggleMenu()" class="md:hidden flex items-center justify-center p-2 rounded-md hover:bg-emerald-800 transition-colors"
+              aria-label="Menú">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          @if (menuOpen) {
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          } @else {
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          }
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  @if (menuOpen) {
+    <div class="md:hidden border-t border-emerald-600 bg-emerald-700 px-4 py-3 flex flex-col gap-2">
+      <a routerLink="/courts" (click)="closeMenu()" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-800 transition-colors">
+        {{ 'nav.fields' | translate }}
+      </a>
+      @if (authService.isAuthenticated()) {
+        <a routerLink="/my-bookings" (click)="closeMenu()" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-800 transition-colors">
+          {{ 'nav.myBookings' | translate }}
+        </a>
+        <a routerLink="/profile" (click)="closeMenu()" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-800 transition-colors">
+          {{ 'nav.profile' | translate }}
+        </a>
+      }
+      @if (authService.isAdminOrVendor()) {
+        <a routerLink="/dashboard" (click)="closeMenu()" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-800 transition-colors">
+          {{ 'nav.vendor' | translate }}
+        </a>
+      }
+      @if (authService.isAdmin()) {
+        <a routerLink="/admin" (click)="closeMenu()" class="px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-800 transition-colors">
+          {{ 'nav.admin' | translate }}
+        </a>
+      }
+      <div class="flex items-center gap-2 pt-2 border-t border-emerald-600">
+        <button (click)="i18n.toggleLang()"
+                class="px-3 py-2 rounded-md text-sm font-medium border border-white hover:bg-emerald-800 transition-colors">
+          {{ i18n.lang() === 'es' ? 'EN' : 'ES' }}
+        </button>
+        @if (authService.isAuthenticated()) {
           <button (click)="logout()"
                   class="px-4 py-2 rounded-md text-sm font-medium bg-emerald-800 hover:bg-emerald-900 transition-colors">
             {{ 'nav.logout' | translate }}
           </button>
         } @else {
-          <a routerLink="/login"
+          <a routerLink="/login" (click)="closeMenu()"
              class="px-4 py-2 rounded-md text-sm font-medium bg-white text-emerald-700 hover:bg-emerald-50 transition-colors">
             {{ 'nav.login' | translate }}
           </a>
-          <a routerLink="/register"
+          <a routerLink="/register" (click)="closeMenu()"
              class="px-4 py-2 rounded-md text-sm font-medium border border-white text-white hover:bg-emerald-800 transition-colors">
             {{ 'nav.register' | translate }}
           </a>
         }
       </div>
     </div>
-  </div>
+  }
 </nav>
 }
