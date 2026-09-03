@@ -28,6 +28,12 @@ export class Register implements OnInit {
   };
   error = '';
   loading = false;
+  usernameTaken = false;
+  emailTaken = false;
+  checkingUsername = false;
+  checkingEmail = false;
+  private usernameDebounce: ReturnType<typeof setTimeout> | undefined;
+  private emailDebounce: ReturnType<typeof setTimeout> | undefined;
 
   ngOnInit() {
     this.title.setTitle('Register - KickCourt');
@@ -49,16 +55,81 @@ export class Register implements OnInit {
         this.toast.success('toast.registerSuccess');
         this.router.navigate(['/login']);
       },
-      error: (err: { error: Record<string, unknown> | null }) => {
+      error: (err: { error: Record<string, unknown> | string | null }) => {
         this.loading = false;
         this.toast.error('toast.registerError');
-        const errors = err.error;
-        if (errors && typeof errors === 'object') {
-          this.error = Object.values(errors).flat().join(' ');
-        } else {
-          this.error = 'auth.registerError';
-        }
+        this.error = this.extractError(err.error);
       },
     });
+  }
+
+  onUsernameChange() {
+    this.usernameDebounce && clearTimeout(this.usernameDebounce);
+    const value = this.userData.username.trim();
+    if (value.length < 3) {
+      this.checkingUsername = false;
+      this.usernameTaken = false;
+      return;
+    }
+    this.checkingUsername = true;
+    this.usernameTaken = false;
+    this.usernameDebounce = setTimeout(() => this.checkAvailability({ username: value }, 'username'), 500);
+  }
+
+  onEmailChange() {
+    this.emailDebounce && clearTimeout(this.emailDebounce);
+    const value = this.userData.email.trim();
+    if (!value.includes('@')) {
+      this.checkingEmail = false;
+      this.emailTaken = false;
+      return;
+    }
+    this.checkingEmail = true;
+    this.emailTaken = false;
+    this.emailDebounce = setTimeout(() => this.checkAvailability({ email: value }, 'email'), 500);
+  }
+
+  private checkAvailability(data: { username?: string; email?: string }, field: 'username' | 'email') {
+    this.authService.checkAvailability(data).subscribe({
+      next: (res) => {
+        this.checkingUsername = false;
+        this.checkingEmail = false;
+        this.usernameTaken = field === 'username' ? res.username_available === false : this.usernameTaken;
+        this.emailTaken = field === 'email' ? res.email_available === false : this.emailTaken;
+      },
+      error: () => {
+        this.checkingUsername = false;
+        this.checkingEmail = false;
+      },
+    });
+  }
+
+  private extractError(err: Record<string, unknown> | string | null | undefined): string {
+    if (!err) {
+      return 'auth.registerFailed';
+    }
+    if (typeof err === 'string') {
+      return err;
+    }
+    const parts: string[] = [];
+    for (const value of Object.values(err)) {
+      this.collectStrings(value, parts);
+    }
+    return parts.length ? parts.join(' ') : 'auth.registerFailed';
+  }
+
+  private collectStrings(value: unknown, out: string[]): void {
+    if (value == null) return;
+    if (typeof value === 'string') {
+      out.push(value);
+    } else if (Array.isArray(value)) {
+      for (const item of value) {
+        this.collectStrings(item, out);
+      }
+    } else if (typeof value === 'object') {
+      for (const v of Object.values(value as Record<string, unknown>)) {
+        this.collectStrings(v, out);
+      }
+    }
   }
 }

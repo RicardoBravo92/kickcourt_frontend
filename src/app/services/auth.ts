@@ -33,6 +33,10 @@ export class AuthService {
     return this.http.post<User>(`${this.apiUrl}/register/`, userData);
   }
 
+  checkAvailability(data: { username?: string; email?: string }): Observable<{ username_available: boolean | null; email_available: boolean | null }> {
+    return this.http.post<{ username_available: boolean | null; email_available: boolean | null }>(`${this.apiUrl}/check-availability/`, data);
+  }
+
   getProfile(): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/profile/`);
   }
