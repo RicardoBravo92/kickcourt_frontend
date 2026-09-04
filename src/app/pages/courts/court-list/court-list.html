@@ -33,7 +33,7 @@
         </div>
         <div class="border-x border-white/10">
           <p class="text-2xl sm:text-3xl font-extrabold text-emerald-400">{{ 'landing.statBookings' | translate }}</p>
-          <p class="text-xs sm:text-sm text-gray-300 mt-1">Realizadas</p>
+          <p class="text-xs sm:text-sm text-gray-300 mt-1">{{ 'landing.bookingsDone' | translate }}</p>
         </div>
         <div>
           <p class="text-2xl sm:text-3xl font-extrabold text-emerald-400">99.8%</p>
@@ -164,7 +164,7 @@
         <div class="flex gap-2">
           <button (click)="applyFilters()"
                   class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-xl text-sm transition-colors shadow-sm">
-            Buscar
+            {{ 'fields.searchBtn' | translate }}
           </button>
           <button (click)="clearFilters()"
                   class="px-4 py-2.5 text-sm text-gray-600 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
@@ -228,12 +228,12 @@
               @if (court.description) {
                 <p class="text-gray-500 text-sm mb-6 line-clamp-2 leading-relaxed">{{ court.description }}</p>
               } @else {
-                <p class="text-gray-400 text-sm mb-6 italic">Cancha en excelentes condiciones lista para jugar.</p>
+                <p class="text-gray-400 text-sm mb-6 italic">{{ 'fields.defaultDescription' | translate }}</p>
               }
 
               <div class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
                 <div>
-                  <span class="text-xs text-gray-400 block uppercase font-medium">Precio por Hora</span>
+                  <span class="text-xs text-gray-400 block uppercase font-medium">{{ 'fields.pricePerHour' | translate }}</span>
                   <p class="text-2xl font-extrabold text-emerald-700">\${{ court.price_per_hour }}</p>
                 </div>
                 <a [routerLink]="['/courts', court.id]"

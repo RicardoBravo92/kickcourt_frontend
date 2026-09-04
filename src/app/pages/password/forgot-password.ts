@@ -35,11 +35,11 @@ export class ForgotPassword implements OnInit {
     this.http.post(`${environment.apiUrl}/password/forgot/`, { email: this.email }).subscribe({
       next: () => {
         this.loading = false;
-        this.success = 'If an account with this email exists, a reset link has been sent.';
+        this.success = 'auth.forgotPasswordSuccess';
       },
       error: (err) => {
         this.loading = false;
-        this.error = err.error?.detail || 'Something went wrong. Please try again.';
+        this.error = err.error?.detail || 'auth.somethingWentWrong';
       },
     });
   }

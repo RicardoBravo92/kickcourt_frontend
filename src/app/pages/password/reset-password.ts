@@ -35,18 +35,18 @@ export class ResetPassword implements OnInit {
     this.token = this.route.snapshot.queryParamMap.get('token') || '';
 
     if (!this.uid || !this.token) {
-      this.error = 'Invalid reset link. Please request a new one.';
+      this.error = 'auth.resetLinkInvalid';
     }
   }
 
   onSubmit() {
     if (this.newPassword !== this.confirmPassword) {
-      this.error = 'Passwords do not match.';
+      this.error = 'auth.passwordsDoNotMatch';
       return;
     }
 
     if (this.newPassword.length < 8) {
-      this.error = 'Password must be at least 8 characters.';
+      this.error = 'auth.passwordTooShort';
       return;
     }
 
@@ -61,12 +61,12 @@ export class ResetPassword implements OnInit {
     }).subscribe({
       next: () => {
         this.loading = false;
-        this.success = 'Password has been reset successfully. You can now log in.';
+        this.success = 'auth.passwordResetSuccess';
         setTimeout(() => this.router.navigate(['/login']), 3000);
       },
       error: (err) => {
         this.loading = false;
-        this.error = err.error?.detail || 'Something went wrong. Please try again.';
+        this.error = err.error?.detail || 'auth.somethingWentWrong';
       },
     });
   }
