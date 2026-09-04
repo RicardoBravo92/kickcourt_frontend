@@ -1,7 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const apiUrl = process.env.API_URL || '';
+const rawApiUrl = (process.env.API_URL || '').trim().replace(/\/+$/, '');
+
+const apiUrl = rawApiUrl.includes('/api')
+  ? rawApiUrl
+  : rawApiUrl
+    ? `${rawApiUrl}/api`
+    : '';
 
 const content = `// Auto-generated during build. Do not edit.
 window.__env = {

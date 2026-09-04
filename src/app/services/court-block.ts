@@ -14,7 +14,7 @@ interface PaginatedResponse<T> {
 @Injectable({ providedIn: 'root' })
 export class CourtBlockService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/court-blocks/`;
+  private apiUrl = `${environment.apiUrl}/court-blocks/`;
 
   getBlocks(courtId?: number): Observable<CourtBlock[]> {
     let url = this.apiUrl;

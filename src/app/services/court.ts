@@ -36,7 +36,7 @@ export interface CourtAvailability {
 @Injectable({ providedIn: 'root' })
 export class CourtService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/courts/`;
+  private apiUrl = `${environment.apiUrl}/courts/`;
 
   private extractResults<T>(res: PaginatedResponse<T> | T[]): T[] {
     return Array.isArray(res) ? res : res.results;

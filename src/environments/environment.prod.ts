@@ -1,6 +1,13 @@
 const w = (window as any).__env || {};
 
+const rawApiUrl = (w.apiUrl || '').trim().replace(/\/+$/, '');
+
+const normalizeApi = (url: string): string => {
+  if (!url) return '';
+  return url.includes('/api') ? url : `${url}/api`;
+};
+
 export const environment = {
   production: true,
-  apiUrl: w.apiUrl || 'https://kickcourt-backend.onrender.com/api',
+  apiUrl: normalizeApi(rawApiUrl),
 };

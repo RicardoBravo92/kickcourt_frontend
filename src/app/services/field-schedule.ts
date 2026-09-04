@@ -16,7 +16,7 @@ interface PaginatedResponse<T> {
 })
 export class FieldScheduleService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/field-schedules/`;
+  private apiUrl = `${environment.apiUrl}/field-schedules/`;
 
   getSchedules(fieldId?: number): Observable<FieldSchedule[]> {
     let url = this.apiUrl;

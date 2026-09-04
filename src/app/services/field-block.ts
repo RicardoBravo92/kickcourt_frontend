@@ -16,7 +16,7 @@ interface PaginatedResponse<T> {
 })
 export class FieldBlockService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/field-blocks/`;
+  private apiUrl = `${environment.apiUrl}/field-blocks/`;
 
   getBlocks(fieldId?: number): Observable<FieldBlock[]> {
     let url = this.apiUrl;

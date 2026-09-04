@@ -14,7 +14,7 @@ interface PaginatedResponse<T> {
 @Injectable({ providedIn: 'root' })
 export class CourtScheduleService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/court-schedules/`;
+  private apiUrl = `${environment.apiUrl}/court-schedules/`;
 
   getSchedules(courtId?: number): Observable<CourtSchedule[]> {
     let url = this.apiUrl;
