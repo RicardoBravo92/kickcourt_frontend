@@ -14,7 +14,7 @@ interface PaginatedResponse<T> {
 @Injectable({ providedIn: 'root' })
 export class VendorService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/api/vendors/`;
+  private apiUrl = `${environment.apiUrl}/vendors/`;
 
   private extractResults<T>(res: PaginatedResponse<T> | T[]): T[] {
     return Array.isArray(res) ? res : res.results;
