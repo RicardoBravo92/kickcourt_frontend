@@ -53,6 +53,16 @@ export class AdminBookings implements OnInit {
     });
   }
 
+  confirmBooking(id: number) {
+    this.bookingService.confirmBooking(id).subscribe({
+      next: () => {
+        this.toast.success('toast.bookingConfirmed');
+        this.loadBookings();
+      },
+      error: () => this.toast.error('toast.confirmError'),
+    });
+  }
+
   restoreBooking(id: number) {
     this.bookingService.restoreBooking(id).subscribe({
       next: () => {

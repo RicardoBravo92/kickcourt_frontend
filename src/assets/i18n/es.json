@@ -155,6 +155,7 @@
     "bookedSuccess": "Reserva creada",
     "id": "ID",
     "complete": "Completar",
+    "confirm": "Confirmar",
     "completedSuccess": "Reserva completada"
   },
   "admin": {
@@ -195,5 +196,38 @@
     "institutionNumber": "Número de Institución",
     "address": "Dirección",
     "phone": "Teléfono"
+  },
+  "toast": {
+    "bookingCreated": "Reserva creada correctamente",
+    "bookingError": "No se pudo crear la reserva",
+    "bookingCancelled": "Reserva cancelada",
+    "bookingCompleted": "Reserva completada",
+    "bookingConfirmed": "Reserva confirmada",
+    "confirmError": "No se pudo confirmar",
+    "bookingRestored": "Reserva restaurada",
+    "cancelError": "No se pudo cancelar",
+    "completeError": "No se pudo completar",
+    "restoreError": "No se pudo restaurar",
+    "csvExported": "Exportación descargada",
+    "csvExportError": "No se pudo exportar el CSV",
+    "blockCreated": "Bloqueo creado",
+    "blockDeleted": "Bloqueo eliminado",
+    "blockError": "Error con el bloqueo",
+    "scheduleCreated": "Horario creado",
+    "scheduleUpdated": "Horario actualizado",
+    "scheduleDeleted": "Horario eliminado",
+    "scheduleError": "Error con el horario",
+    "courtError": "Error con la cancha",
+    "fieldError": "Error con el campo",
+    "profileUpdated": "Perfil actualizado",
+    "profileError": "No se pudo actualizar el perfil",
+    "passwordChanged": "Contraseña cambiada",
+    "passwordError": "No se pudo cambiar la contraseña",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "registerSuccess": "Registro exitoso",
+    "registerError": "No se pudo registrar",
+    "vendorApproved": "Vendedor aprobado",
+    "vendorRejected": "Vendedor rechazado",
+    "vendorError": "Error con el vendedor"
   }
 }

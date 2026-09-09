@@ -59,6 +59,10 @@ export class BookingService {
     return this.http.post<{ status: string }>(`${this.apiUrl}${id}/complete/`, {});
   }
 
+  confirmBooking(id: number): Observable<{ status: string }> {
+    return this.http.post<{ status: string }>(`${this.apiUrl}${id}/confirm/`, {});
+  }
+
   restoreBooking(id: number): Observable<{ status: string }> {
     return this.http.post<{ status: string }>(`${this.apiUrl}${id}/restore/`, {});
   }

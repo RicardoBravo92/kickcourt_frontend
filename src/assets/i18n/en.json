@@ -155,6 +155,7 @@
     "bookedSuccess": "Booking created",
     "id": "ID",
     "complete": "Complete",
+    "confirm": "Confirm",
     "completedSuccess": "Booking completed"
   },
   "admin": {
@@ -195,5 +196,38 @@
     "institutionNumber": "Institution Number",
     "address": "Address",
     "phone": "Phone"
+  },
+  "toast": {
+    "bookingCreated": "Booking created successfully",
+    "bookingError": "Could not create the booking",
+    "bookingCancelled": "Booking cancelled",
+    "bookingCompleted": "Booking completed",
+    "bookingConfirmed": "Booking confirmed",
+    "confirmError": "Could not confirm",
+    "bookingRestored": "Booking restored",
+    "cancelError": "Could not cancel",
+    "completeError": "Could not complete",
+    "restoreError": "Could not restore",
+    "csvExported": "Export downloaded",
+    "csvExportError": "Could not export the CSV",
+    "blockCreated": "Block created",
+    "blockDeleted": "Block deleted",
+    "blockError": "Block error",
+    "scheduleCreated": "Schedule created",
+    "scheduleUpdated": "Schedule updated",
+    "scheduleDeleted": "Schedule deleted",
+    "scheduleError": "Schedule error",
+    "courtError": "Court error",
+    "fieldError": "Field error",
+    "profileUpdated": "Profile updated",
+    "profileError": "Could not update profile",
+    "passwordChanged": "Password changed",
+    "passwordError": "Could not change password",
+    "passwordMismatch": "Passwords do not match",
+    "registerSuccess": "Registration successful",
+    "registerError": "Could not register",
+    "vendorApproved": "Vendor approved",
+    "vendorRejected": "Vendor rejected",
+    "vendorError": "Vendor error"
   }
 }

@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { FieldService, TimeSlot, FieldAvailability } from '../../../services/field';
+import { todayLocalISO } from '../../../services/dates';
 import { Field } from '../../../models/field';
 import { TranslatePipe } from '../../../pipes/translate';
 
@@ -33,8 +34,7 @@ export class FieldDetail implements OnInit {
       error: () => (this.loading = false),
     });
 
-    const today = new Date();
-    this.selectedDate = today.toISOString().split('T')[0];
+    this.selectedDate = todayLocalISO();
   }
 
   loadAvailability() {

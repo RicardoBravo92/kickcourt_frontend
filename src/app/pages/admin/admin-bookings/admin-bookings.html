@@ -39,6 +39,9 @@
               <td class="px-6 py-4 text-sm font-medium text-gray-900">\${{ b.total_price }}</td>
               <td class="px-6 py-4 text-sm space-x-2">
                  @if (b.status !== 'CANCELLED' && b.status !== 'COMPLETED') {
+                   @if (b.status === 'PENDING') {
+                     <button (click)="confirmBooking(b.id!)" class="text-blue-600 hover:text-blue-800 font-medium">{{ 'bookings.confirm' | translate }}</button>
+                   }
                    <button (click)="cancelBooking(b.id!)" class="text-red-600 hover:text-red-800 font-medium">{{ 'admin.delete' | translate }}</button>
                    <button (click)="completeBooking(b.id!)" class="text-emerald-600 hover:text-emerald-800 font-medium">{{ 'bookings.complete' | translate }}</button>
                  }

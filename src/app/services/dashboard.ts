@@ -31,6 +31,12 @@ export interface VendorDashboard {
   pending_approvals: number;
 }
 
+export interface CsvFilters {
+  status?: string;
+  date_from?: string;
+  date_to?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
   private http = inject(HttpClient);
@@ -40,7 +46,7 @@ export class DashboardService {
     return this.http.get<DashboardStats>(`${this.apiUrl}stats/`);
   }
 
-  exportCsv(filters?: { status?: string; date_from?: string; date_to?: string }): string {
+  exportCsv(filters?: CsvFilters): Observable<Blob> {
     let params = new HttpParams();
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
@@ -49,6 +55,9 @@ export class DashboardService {
         }
       });
     }
-    return `${this.apiUrl}export/csv/?${params.toString()}`;
+    return this.http.get(`${this.apiUrl}export/csv/`, {
+      params,
+      responseType: 'blob',
+    });
   }
 }

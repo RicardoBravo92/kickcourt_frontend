@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, BehaviorSubject, switchMap, of } from 'rxjs';
+import { Observable, tap, Subject, map, take, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthResponse, User, UserRole } from '../models/user';
 
@@ -11,7 +11,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
   private refreshTokenInProgress = false;
-  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
+  private refreshTokenSubject = new Subject<string>();
 
   currentUser = signal<User | null>(null);
 
@@ -57,13 +57,13 @@ export class AuthService {
     }
 
     if (this.refreshTokenInProgress) {
-      return this.refreshTokenSubject.asObservable().pipe(
-        switchMap(token => of(token || ''))
+      return this.refreshTokenSubject.pipe(
+        map((token) => token || ''),
+        take(1)
       );
     }
 
     this.refreshTokenInProgress = true;
-    this.refreshTokenSubject.next(null);
 
     return new Observable<string>(observer => {
       this.http.post<{ access: string }>(`${this.apiUrl}/auth/refresh/`, { refresh }).subscribe({
@@ -77,6 +77,7 @@ export class AuthService {
         error: () => {
           this.refreshTokenInProgress = false;
           this.logout();
+          this.refreshTokenSubject.next('');
           observer.next('');
           observer.complete();
         }

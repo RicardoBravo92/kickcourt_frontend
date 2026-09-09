@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { CourtService, TimeSlot, CourtAvailability } from '../../../services/court';
+import { todayLocalISO } from '../../../services/dates';
 import { Court, SportType, SurfaceType } from '../../../models/court';
 import { TranslatePipe } from '../../../pipes/translate';
 
@@ -46,8 +47,7 @@ export class CourtDetail implements OnInit {
       error: () => (this.loading = false),
     });
 
-    const today = new Date();
-    this.selectedDate = today.toISOString().split('T')[0];
+    this.selectedDate = todayLocalISO();
   }
 
   loadAvailability() {

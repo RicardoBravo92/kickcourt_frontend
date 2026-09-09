@@ -146,13 +146,22 @@ export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
   }
 
   exportCsv() {
-    const url = this.dashboardService.exportCsv({
+    this.dashboardService.exportCsv({
       status: this.exportStatus,
       date_from: this.exportDateFrom,
       date_to: this.exportDateTo,
+    }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'bookings_export.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.toast.success('toast.csvExported');
+      },
+      error: () => this.toast.error('toast.csvExportError'),
     });
-    window.open(url, '_blank');
-    this.toast.success('toast.csvExported');
   }
 
   getStatusCount(status: string): number {
