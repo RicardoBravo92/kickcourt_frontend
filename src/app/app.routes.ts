@@ -22,7 +22,6 @@ export const routes: Routes = [
   { path: 'admin/courts/new', loadComponent: () => import('./pages/courts/court-form/court-form').then(m => m.CourtForm), canActivate: [authGuard, adminGuard] },
   { path: 'admin/courts/:id/edit', loadComponent: () => import('./pages/courts/court-form/court-form').then(m => m.CourtForm), canActivate: [authGuard, adminGuard] },
   { path: 'admin/vendors', loadComponent: () => import('./pages/admin/admin-vendors/admin-vendors').then(m => m.AdminVendors), canActivate: [authGuard, adminGuard] },
-  { path: 'dashboard', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', loadComponent: () => import('./pages/vendor/vendor-dashboard/vendor-dashboard').then(m => m.VendorDashboard), canActivate: [authGuard, vendorGuard] },
   { path: 'dashboard/courts', loadComponent: () => import('./pages/vendor/vendor-courts/vendor-courts').then(m => m.VendorCourts), canActivate: [authGuard, vendorGuard] },
   { path: 'dashboard/courts/new', loadComponent: () => import('./pages/courts/court-form/court-form').then(m => m.CourtForm), canActivate: [authGuard, vendorGuard] },
