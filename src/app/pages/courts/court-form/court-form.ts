@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CourtService } from '../../../services/court';
 import { ToastService } from '../../../services/toast';
 import { Court, SportType, SurfaceType } from '../../../models/court';
@@ -11,12 +12,14 @@ import { TranslatePipe } from '../../../pipes/translate';
   imports: [FormsModule, RouterLink, TranslatePipe],
   templateUrl: './court-form.html',
   styleUrl: './court-form.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CourtForm implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private courtService = inject(CourtService);
   private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
 
   court: Partial<Court> = {
     name: '',
@@ -29,8 +32,8 @@ export class CourtForm implements OnInit {
   };
   isEdit = false;
   courtId = 0;
-  error = '';
-  loading = false;
+  error = signal('');
+  loading = signal(false);
 
   sportTypes: { value: SportType; label: string }[] = [
     { value: 'FOOTBALL', label: 'Fútbol' },
@@ -66,7 +69,7 @@ export class CourtForm implements OnInit {
     this.courtId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.courtId) {
       this.isEdit = true;
-      this.courtService.getCourtById(this.courtId).subscribe({
+      this.courtService.getCourtById(this.courtId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (c: Court) => (this.court = c),
         error: () => {
           const returnPath = this.route.snapshot.url[0]?.path === 'vendor' ? '/vendor/courts' : '/admin';
@@ -98,27 +101,27 @@ export class CourtForm implements OnInit {
   }
 
   onSubmit() {
-    this.loading = true;
-    this.error = '';
+    this.loading.set(true);
+    this.error.set('');
 
     const obs = this.isEdit
       ? this.courtService.updateCourt(this.courtId, this.court)
       : this.courtService.createCourt(this.court);
 
-    obs.subscribe({
+    obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(this.isEdit ? 'toast.courtUpdated' : 'toast.courtCreated');
         const returnPath = this.route.snapshot.url[0]?.path === 'vendor' ? '/vendor/courts' : '/admin';
         this.router.navigate([returnPath]);
       },
       error: (err: { error: Record<string, unknown> | null }) => {
-        this.loading = false;
+        this.loading.set(false);
         this.toast.error('toast.courtError');
         const errors = err.error;
         if (errors && typeof errors === 'object') {
-          this.error = Object.values(errors).flat().join(' ');
+          this.error.set(Object.values(errors).flat().join(' '));
         } else {
-          this.error = 'courts.saveError';
+          this.error.set('courts.saveError');
         }
       },
     });

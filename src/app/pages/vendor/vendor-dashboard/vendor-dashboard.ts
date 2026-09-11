@@ -1,7 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '../../../pipes/translate';
 import { VendorService } from '../../../services/vendor';
 
@@ -10,14 +11,16 @@ import { VendorService } from '../../../services/vendor';
   imports: [RouterLink, TranslatePipe, DecimalPipe],
   templateUrl: './vendor-dashboard.html',
   styleUrl: './vendor-dashboard.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VendorDashboard implements OnInit {
   private vendorService = inject(VendorService);
+  private destroyRef = inject(DestroyRef);
   private meta = inject(Meta);
   private title = inject(Title);
 
-  stats: any = null;
-  loading = true;
+  stats = signal<any | null>(null);
+  loading = signal(true);
 
   ngOnInit() {
     this.title.setTitle('Vendor Dashboard - KickCourt');
@@ -29,12 +32,12 @@ export class VendorDashboard implements OnInit {
     this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
     this.meta.updateTag({ name: 'twitter:title', content: 'Vendor Dashboard - KickCourt' });
     this.meta.updateTag({ name: 'twitter:description', content: 'Manage your soccer courts, view bookings and analytics from the vendor dashboard.' });
-    this.vendorService.getDashboard().subscribe({
+    this.vendorService.getDashboard().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
-        this.stats = data;
-        this.loading = false;
+        this.stats.set(data);
+        this.loading.set(false);
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 }

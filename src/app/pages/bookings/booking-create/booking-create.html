@@ -1,15 +1,15 @@
 <div class="max-w-2xl mx-auto px-4 py-8">
   <h1 class="text-3xl font-bold text-gray-900 mb-6">{{ 'bookings.createTitle' | translate }}</h1>
 
-  @if (court) {
+  @if (court()) {
     <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6">
-      <h2 class="font-semibold text-emerald-800">{{ court.name }}</h2>
-      <p class="text-sm text-emerald-700">${{ court.price_per_hour }}{{ 'fields.perHour' | translate }}</p>
+      <h2 class="font-semibold text-emerald-800">{{ court()!.name }}</h2>
+      <p class="text-sm text-emerald-700">${{ court()!.price_per_hour }}{{ 'fields.perHour' | translate }}</p>
     </div>
   }
 
-  @if (error) {
-    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">{{ error }}</div>
+  @if (error()) {
+    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">{{ error() }}</div>
   }
 
   <form (ngSubmit)="onSubmit()" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
@@ -31,9 +31,9 @@
       </div>
     </div>
     <div class="flex gap-4 pt-4">
-      <button type="submit" [disabled]="loading"
+      <button type="submit" [disabled]="loading()"
               class="bg-emerald-600 text-white py-2.5 px-6 rounded-xl hover:bg-emerald-700 disabled:opacity-50 font-medium transition-colors">
-        @if (loading) { {{ 'bookings.cancelling' | translate }} } @else { {{ 'bookings.confirm' | translate }} }
+        @if (loading()) { {{ 'bookings.cancelling' | translate }} } @else { {{ 'bookings.confirm' | translate }} }
       </button>
       <a [routerLink]="['/courts', booking.court]"
          class="border border-gray-300 text-gray-700 py-2.5 px-6 rounded-xl hover:bg-gray-50 font-medium transition-colors">

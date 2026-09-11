@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { VendorService } from '../../../services/vendor';
 import { CourtService } from '../../../services/court';
 import { Vendor } from '../../../models/vendor';
@@ -12,6 +13,7 @@ import { TranslatePipe } from '../../../pipes/translate';
   imports: [RouterLink, TranslatePipe],
   templateUrl: './vendor-detail.html',
   styleUrl: './vendor-detail.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VendorDetail implements OnInit {
   private route = inject(ActivatedRoute);
@@ -19,16 +21,17 @@ export class VendorDetail implements OnInit {
   private courtService = inject(CourtService);
   private meta = inject(Meta);
   private title = inject(Title);
+  private destroyRef = inject(DestroyRef);
 
-  vendor: Vendor | null = null;
-  courts: Court[] = [];
-  loading = true;
+  vendor = signal<Vendor | null>(null);
+  courts = signal<Court[]>([]);
+  loading = signal(true);
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.vendorService.getVendor(id).subscribe({
+    this.vendorService.getVendor(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (v) => {
-        this.vendor = v;
+        this.vendor.set(v);
         this.title.setTitle(`${v.business_name} - KickCourt`);
         this.meta.updateTag({ name: 'description', content: v.description || `${v.business_name} - Soccer court vendor` });
         this.meta.updateTag({ property: 'og:title', content: v.business_name });
@@ -41,17 +44,17 @@ export class VendorDetail implements OnInit {
         this.meta.updateTag({ name: 'twitter:description', content: v.description || `${v.business_name} - Soccer court vendor` });
         this.loadCourts();
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 
   loadCourts() {
-    this.courtService.getCourts({ vendor: this.vendor?.id || 0 }).subscribe({
+    this.courtService.getCourts({ vendor: this.vendor()?.id || 0 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (courts) => {
-        this.courts = courts;
-        this.loading = false;
+        this.courts.set(courts);
+        this.loading.set(false);
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 

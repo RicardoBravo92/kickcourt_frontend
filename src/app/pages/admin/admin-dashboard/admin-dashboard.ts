@@ -1,8 +1,9 @@
-import { Component, inject, OnInit, OnDestroy, AfterViewInit, ElementRef, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, OnDestroy, AfterViewInit, ElementRef, viewChild, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '../../../pipes/translate';
 import { DashboardService, DashboardStats } from '../../../services/dashboard';
 import { CourtService } from '../../../services/court';
@@ -17,17 +18,19 @@ Chart.register(...registerables);
   imports: [RouterLink, TranslatePipe, DecimalPipe, FormsModule],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
   private dashboardService = inject(DashboardService);
   private courtService = inject(CourtService);
   private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
   private meta = inject(Meta);
   private title = inject(Title);
 
-  stats: DashboardStats | null = null;
+  stats = signal<DashboardStats | null>(null);
   courts: Court[] = [];
-  loading = true;
+  loading = signal(true);
   exportDateFrom = '';
   exportDateTo = '';
   exportStatus = '';
@@ -55,7 +58,7 @@ export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
     this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
     this.meta.updateTag({ name: 'twitter:title', content: 'Admin Dashboard - KickCourt' });
     this.meta.updateTag({ name: 'twitter:description', content: 'Manage courts, bookings and users from the admin dashboard.' });
-    this.courtService.getCourts().subscribe({
+    this.courtService.getCourts().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (c) => (this.courts = c),
     });
   }
@@ -65,21 +68,22 @@ export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loadStats() {
-    this.loading = true;
-    this.dashboardService.getStats().subscribe({
+    this.loading.set(true);
+    this.dashboardService.getStats().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
-        this.stats = data;
-        this.loading = false;
+        this.stats.set(data);
+        this.loading.set(false);
         setTimeout(() => this.renderCharts(), 0);
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 
   renderCharts() {
     this.charts.forEach(c => c.destroy());
     this.charts = [];
-    if (!this.stats) return;
+    const stats = this.stats();
+    if (!stats) return;
     this.renderBookingsByMonthChart();
     this.renderStatusChart();
   }
@@ -87,7 +91,7 @@ export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
   renderBookingsByMonthChart() {
     const el = this.bookingsChartRef();
     if (!el) return;
-    const data = this.stats!.bookings_by_month;
+    const data = this.stats()!.bookings_by_month;
     const labels = data.map(d => d.month);
     const values = data.map(d => d.count);
 
@@ -120,7 +124,7 @@ export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
   renderStatusChart() {
     const el = this.statusChartRef();
     if (!el) return;
-    const data = this.stats!.booking_stats;
+    const data = this.stats()!.booking_stats;
     const colorMap: Record<string, string> = {
       PENDING: '#facc15',
       CONFIRMED: '#22c55e',
@@ -150,7 +154,7 @@ export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
       status: this.exportStatus,
       date_from: this.exportDateFrom,
       date_to: this.exportDateTo,
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -165,7 +169,7 @@ export class AdminDashboard implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getStatusCount(status: string): number {
-    return this.stats?.booking_stats?.[status] || 0;
+    return this.stats()?.booking_stats?.[status] || 0;
   }
 
   ngOnDestroy() {

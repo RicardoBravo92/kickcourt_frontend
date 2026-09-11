@@ -10,6 +10,7 @@ export class I18nService {
   private http = inject(HttpClient);
   translations = signal<Record<string, unknown>>({});
   private _lang = signal<Lang>((typeof localStorage !== 'undefined' ? (localStorage.getItem('lang') as Lang) : null) || 'es');
+  private loadRequestId = 0;
 
   lang = this._lang.asReadonly();
 
@@ -30,9 +31,18 @@ export class I18nService {
   }
 
   private loadTranslations(lang: Lang) {
+    const requestId = ++this.loadRequestId;
     this.http.get<Record<string, unknown>>(`assets/i18n/${lang}.json`).subscribe({
-      next: (data) => this.translations.set(data),
-      error: () => this.translations.set({}),
+      next: (data) => {
+        if (requestId === this.loadRequestId) {
+          this.translations.set(data);
+        }
+      },
+      error: () => {
+        if (requestId === this.loadRequestId) {
+          this.translations.set({});
+        }
+      },
     });
   }
 

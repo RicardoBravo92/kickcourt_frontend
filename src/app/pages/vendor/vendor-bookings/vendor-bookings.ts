@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BookingService } from '../../../services/booking';
 import { ToastService } from '../../../services/toast';
 import { Booking } from '../../../models/booking';
@@ -11,14 +12,16 @@ import { TranslatePipe } from '../../../pipes/translate';
   imports: [RouterLink, FormsModule, TranslatePipe],
   templateUrl: './vendor-bookings.html',
   styleUrl: './vendor-bookings.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VendorBookings implements OnInit {
   private bookingService = inject(BookingService);
   private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
 
-  bookings: Booking[] = [];
+  bookings = signal<Booking[]>([]);
   selectedCustomer: Booking | null = null;
-  loading = true;
+  loading = signal(true);
 
   statuses: ('PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED')[] = ['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'];
   filterStatus: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED' | undefined;
@@ -29,13 +32,13 @@ export class VendorBookings implements OnInit {
   }
 
   loadBookings() {
-    this.loading = true;
-    this.bookingService.getBookings({ status: this.filterStatus, date: this.filterDate || undefined }).subscribe({
+    this.loading.set(true);
+    this.bookingService.getBookings({ status: this.filterStatus, date: this.filterDate || undefined }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (b) => {
-        this.bookings = b;
-        this.loading = false;
+        this.bookings.set(b);
+        this.loading.set(false);
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 
@@ -50,7 +53,7 @@ export class VendorBookings implements OnInit {
   }
 
   cancelBooking(id: number) {
-    this.bookingService.cancelBooking(id).subscribe({
+    this.bookingService.cancelBooking(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('toast.bookingCancelled');
         this.loadBookings();
@@ -60,7 +63,7 @@ export class VendorBookings implements OnInit {
   }
 
   completeBooking(id: number) {
-    this.bookingService.completeBooking(id).subscribe({
+    this.bookingService.completeBooking(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('toast.bookingCompleted');
         this.loadBookings();
@@ -70,7 +73,7 @@ export class VendorBookings implements OnInit {
   }
 
   restoreBooking(id: number) {
-    this.bookingService.restoreBooking(id).subscribe({
+    this.bookingService.restoreBooking(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('toast.bookingRestored');
         this.loadBookings();

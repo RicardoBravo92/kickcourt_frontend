@@ -4,9 +4,9 @@
     <a routerLink="/admin" class="text-emerald-600 hover:text-emerald-700 font-medium text-sm">{{ 'admin.backToPanel' | translate }}</a>
   </div>
 
-  @if (loading) {
+  @if (loading()) {
     <div class="text-center py-12 text-gray-500">{{ 'common.loading' | translate }}</div>
-  } @else if (bookings.length === 0) {
+  } @else if (bookings().length === 0) {
     <div class="text-center py-12 text-gray-500">{{ 'admin.noBookings' | translate }}</div>
   } @else {
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -24,7 +24,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          @for (b of bookings; track b.id) {
+          @for (b of bookings(); track b.id) {
             <tr class="hover:bg-gray-50">
               <td class="px-6 py-4 text-sm text-gray-900">#{{ b.id }}</td>
               <td class="px-6 py-4 text-sm text-gray-600">{{ b.user }}</td>

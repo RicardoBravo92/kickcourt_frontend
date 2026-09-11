@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CourtService } from '../../../services/court';
 import { CourtBlockService } from '../../../services/court-block';
 import { ToastService } from '../../../services/toast';
@@ -12,18 +13,20 @@ import { TranslatePipe } from '../../../pipes/translate';
   imports: [RouterLink, FormsModule, TranslatePipe],
   templateUrl: './admin-blocks.html',
   styleUrl: './admin-blocks.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminBlocks implements OnInit {
   private courtService = inject(CourtService);
   private blockService = inject(CourtBlockService);
   private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
 
-  courts: Court[] = [];
+  courts = signal<Court[]>([]);
   selectedCourtId: number | null = null;
-  blocks: CourtBlock[] = [];
-  loading = false;
-  saving = false;
-  error = '';
+  blocks = signal<CourtBlock[]>([]);
+  loading = signal(false);
+  saving = signal(false);
+  error = signal('');
 
   newBlock: Partial<CourtBlock> = {
     date: '',
@@ -33,23 +36,23 @@ export class AdminBlocks implements OnInit {
   };
 
   ngOnInit() {
-    this.courtService.getCourts().subscribe({
-      next: (c) => (this.courts = c),
+    this.courtService.getCourts().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (c) => this.courts.set(c),
     });
   }
 
   onCourtChange() {
     if (!this.selectedCourtId) {
-      this.blocks = [];
+      this.blocks.set([]);
       return;
     }
-    this.loading = true;
-    this.blockService.getBlocks(this.selectedCourtId).subscribe({
+    this.loading.set(true);
+    this.blockService.getBlocks(this.selectedCourtId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (b) => {
-        this.blocks = b;
-        this.loading = false;
+        this.blocks.set(b);
+        this.loading.set(false);
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 
@@ -63,38 +66,38 @@ export class AdminBlocks implements OnInit {
       return;
     }
     if (this.newBlock.end_time <= this.newBlock.start_time) {
-      this.error = 'End time must be after start time';
+      this.error.set('End time must be after start time');
       return;
     }
-    this.saving = true;
-    this.error = '';
+    this.saving.set(true);
+    this.error.set('');
     const block: Partial<CourtBlock> = {
       ...this.newBlock,
       court: this.selectedCourtId,
     };
-    this.blockService.createBlock(block).subscribe({
+    this.blockService.createBlock(block).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (b) => {
-        this.blocks.unshift(b);
+        this.blocks.update(list => [b, ...list]);
         this.newBlock = { date: '', start_time: '08:00', end_time: '22:00', reason: '' };
-        this.saving = false;
+        this.saving.set(false);
         this.toast.success('toast.blockCreated');
       },
       error: () => {
-        this.saving = false;
-        this.error = 'Error creating block';
+        this.saving.set(false);
+        this.error.set('Error creating block');
         this.toast.error('toast.blockError');
       },
     });
   }
 
   deleteBlock(id: number) {
-    this.blockService.deleteBlock(id).subscribe({
+    this.blockService.deleteBlock(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.blocks = this.blocks.filter((b) => b.id !== id);
+        this.blocks.update(list => list.filter((b) => b.id !== id));
         this.toast.success('toast.blockDeleted');
       },
       error: () => {
-        this.error = 'Error deleting block';
+        this.error.set('Error deleting block');
         this.toast.error('toast.blockError');
       },
     });

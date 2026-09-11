@@ -3,8 +3,8 @@
     {{ isEdit ? ('fields.editField' | translate) : ('fields.newField' | translate) }}
   </h1>
 
-  @if (error) {
-    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">{{ error }}</div>
+  @if (error()) {
+    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">{{ error() }}</div>
   }
 
   <form (ngSubmit)="onSubmit()" class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
@@ -67,9 +67,9 @@
     </div>
 
     <div class="flex gap-4 pt-4">
-      <button type="submit" [disabled]="loading"
+      <button type="submit" [disabled]="loading()"
               class="bg-emerald-600 text-white py-2.5 px-6 rounded-xl hover:bg-emerald-700 disabled:opacity-50 font-medium transition-colors">
-        @if (loading) { {{ 'fields.saving' | translate }} } @else { {{ isEdit ? ('fields.updateBtn' | translate) : ('fields.createBtn' | translate) }} }
+        @if (loading()) { {{ 'fields.saving' | translate }} } @else { {{ isEdit ? ('fields.updateBtn' | translate) : ('fields.createBtn' | translate) }} }
       </button>
       <a [routerLink]="isEdit ? ['/admin'] : ['/admin']"
          class="border border-gray-300 text-gray-700 py-2.5 px-6 rounded-xl hover:bg-gray-50 font-medium transition-colors">

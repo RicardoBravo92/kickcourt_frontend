@@ -9,14 +9,14 @@
     <select [(ngModel)]="selectedCourtId" (change)="onCourtChange()"
             class="w-full max-w-md px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500">
       <option [ngValue]="null">{{ 'fields.allF' | translate }}</option>
-      @for (court of courts; track court.id) {
+      @for (court of courts(); track court.id) {
         <option [ngValue]="court.id">{{ court.name }}</option>
       }
     </select>
   </div>
 
-  @if (error) {
-    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">{{ error }}</div>
+  @if (error()) {
+    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">{{ error() }}</div>
   }
 
   @if (selectedCourtId) {
@@ -44,15 +44,15 @@
                  class="w-full px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500" />
         </div>
       </div>
-      <button (click)="addBlock()" [disabled]="saving || !newBlock.date"
+      <button (click)="addBlock()" [disabled]="saving() || !newBlock.date"
               class="mt-4 bg-emerald-600 text-white py-2.5 px-4 rounded-xl hover:bg-emerald-700 disabled:opacity-50 font-medium text-sm transition-colors">
-        @if (saving) { {{ 'common.loading' | translate }} } @else { {{ 'blocks.addBtn' | translate }} }
+        @if (saving()) { {{ 'common.loading' | translate }} } @else { {{ 'blocks.addBtn' | translate }} }
       </button>
     </div>
 
-    @if (loading) {
+    @if (loading()) {
       <div class="text-center py-12 text-gray-500">{{ 'common.loading' | translate }}</div>
-    } @else if (blocks.length === 0) {
+    } @else if (blocks().length === 0) {
       <div class="text-center py-12 text-gray-500">{{ 'blocks.noBlocks' | translate }}</div>
     } @else {
       <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -67,7 +67,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            @for (block of blocks; track block.id) {
+            @for (block of blocks(); track block.id) {
               <tr class="hover:bg-gray-50">
                 <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ block.date }}</td>
                 <td class="px-6 py-4 text-sm text-gray-600">{{ block.start_time }} - {{ block.end_time }}</td>

@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { environment } from '../../../environments/environment';
 import { TranslatePipe } from '../../pipes/translate';
 
@@ -11,16 +12,18 @@ import { TranslatePipe } from '../../pipes/translate';
   imports: [FormsModule, RouterLink, TranslatePipe],
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForgotPassword implements OnInit {
   private http = inject(HttpClient);
+  private destroyRef = inject(DestroyRef);
   private meta = inject(Meta);
   private title = inject(Title);
 
   email = '';
-  error = '';
-  success = '';
-  loading = false;
+  error = signal('');
+  success = signal('');
+  loading = signal(false);
 
   ngOnInit() {
     this.title.setTitle('Forgot Password - KickCourt');
@@ -28,18 +31,18 @@ export class ForgotPassword implements OnInit {
   }
 
   onSubmit() {
-    this.loading = true;
-    this.error = '';
-    this.success = '';
+    this.loading.set(true);
+    this.error.set('');
+    this.success.set('');
 
-    this.http.post(`${environment.apiUrl}/password/forgot/`, { email: this.email }).subscribe({
+    this.http.post(`${environment.apiUrl}/password/forgot/`, { email: this.email }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.loading = false;
-        this.success = 'auth.forgotPasswordSuccess';
+        this.loading.set(false);
+        this.success.set('auth.forgotPasswordSuccess');
       },
       error: (err) => {
-        this.loading = false;
-        this.error = err.error?.detail || 'auth.somethingWentWrong';
+        this.loading.set(false);
+        this.error.set(err.error?.detail || 'auth.somethingWentWrong');
       },
     });
   }

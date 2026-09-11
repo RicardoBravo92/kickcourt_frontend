@@ -1,36 +1,36 @@
 <div class="max-w-4xl mx-auto px-4 py-8">
-  @if (loading) {
+  @if (loading()) {
     <div class="text-center py-12 text-gray-500">{{ 'fields.loadingDetail' | translate }}</div>
-  } @else if (!court) {
+  } @else if (!court()) {
     <div class="text-center py-12 text-gray-500">{{ 'fields.notFound' | translate }}</div>
   } @else {
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      @if (court.photo) {
-        <img [src]="court.photo" [alt]="court.name" class="w-full h-64 object-cover" />
+      @if (court()!.photo) {
+        <img [src]="court()!.photo" [alt]="court()!.name" class="w-full h-64 object-cover" />
       } @else {
         <div class="w-full h-64 bg-gradient-to-br from-emerald-600 via-teal-700 to-green-800 flex items-center justify-center">
-          <span class="text-6xl">{{ getSportEmoji(court.sport_type) }}</span>
+          <span class="text-6xl">{{ getSportEmoji(court()!.sport_type) }}</span>
         </div>
       }
       <div class="p-6">
-        <h1 class="text-3xl font-bold text-gray-900">{{ court.name }}</h1>
+        <h1 class="text-3xl font-bold text-gray-900">{{ court()!.name }}</h1>
         <div class="mt-4 grid grid-cols-2 gap-4">
           <div>
             <span class="text-sm text-gray-500">{{ 'fields.sport' | translate }}</span>
-            <p class="font-medium">{{ getSportName(court.sport_type) }}</p>
+            <p class="font-medium">{{ getSportName(court()!.sport_type) }}</p>
           </div>
           <div>
             <span class="text-sm text-gray-500">{{ 'fields.surface' | translate }}</span>
-            <p class="font-medium">{{ getSurfaceName(court.surface) }}</p>
+            <p class="font-medium">{{ getSurfaceName(court()!.surface) }}</p>
           </div>
           <div>
             <span class="text-sm text-gray-500">{{ 'fields.pricePerHour' | translate }}</span>
-            <p class="font-bold text-emerald-600 text-xl">${{ court.price_per_hour }}</p>
+            <p class="font-bold text-emerald-600 text-xl">${{ court()!.price_per_hour }}</p>
           </div>
           <div>
             <span class="text-sm text-gray-500">{{ 'fields.status' | translate }}</span>
             <p class="font-medium">
-              @if (court.is_active) {
+              @if (court()!.is_active) {
                 <span class="text-emerald-600">{{ 'fields.active' | translate }}</span>
               } @else {
                 <span class="text-rose-600">{{ 'fields.inactive' | translate }}</span>
@@ -38,19 +38,19 @@
             </p>
           </div>
         </div>
-        @if (court.description) {
+        @if (court()!.description) {
           <div class="mt-4">
             <span class="text-sm text-gray-500">{{ 'fields.description' | translate }}</span>
-            <p class="mt-1 text-gray-700">{{ court.description }}</p>
+            <p class="mt-1 text-gray-700">{{ court()!.description }}</p>
           </div>
         } @else {
           <p class="text-gray-400 text-sm mt-6 italic">{{ 'fields.defaultDescription' | translate }}</p>
         }
-        @if (court.vendor_name) {
+        @if (court()!.vendor_name) {
           <div class="mt-4 pt-4 border-t border-gray-100">
             <span class="text-sm text-gray-500">{{ 'fields.vendor' | translate }}</span>
-            <a [routerLink]="['/dashboard/vendors', court.vendor]" class="text-emerald-600 hover:text-emerald-700 font-medium text-sm">
-              {{ court.vendor_name }}
+            <a [routerLink]="['/dashboard/vendors', court()!.vendor]" class="text-emerald-600 hover:text-emerald-700 font-medium text-sm">
+              {{ court()!.vendor_name }}
             </a>
           </div>
         }
@@ -67,10 +67,10 @@
         </div>
       </div>
 
-      @if (loadingSlots) {
+      @if (loadingSlots()) {
         <div class="text-center py-8 text-gray-500">{{ 'availability.loading' | translate }}</div>
-      } @else if (availability) {
-        @if (availability.slots.length === 0) {
+      } @else if (availability()) {
+        @if (availability()!.slots.length === 0) {
           <div class="text-center py-8 text-gray-500">{{ 'availability.closed' | translate }}</div>
         } @else {
           <div class="flex items-center gap-4 mb-4 text-sm">
@@ -89,7 +89,7 @@
           </div>
 
           <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-5 gap-3">
-            @for (slot of availability.slots; track slot.time) {
+            @for (slot of availability()!.slots; track slot.time) {
               @if (slot.status === 'blocked') {
                 <div class="border-2 border-yellow-300 bg-yellow-50 text-yellow-600 rounded-xl py-3 px-2 text-center cursor-not-allowed">
                   <p class="font-semibold text-sm">{{ slot.time }}</p>

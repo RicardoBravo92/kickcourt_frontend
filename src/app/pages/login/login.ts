@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
@@ -10,6 +10,7 @@ import { TranslatePipe } from '../../pipes/translate';
   imports: [FormsModule, RouterLink, TranslatePipe],
   templateUrl: './login.html',
   styleUrl: './login.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login implements OnInit {
   private authService = inject(AuthService);
@@ -18,8 +19,8 @@ export class Login implements OnInit {
   private title = inject(Title);
 
   credentials = { username: '', password: '' };
-  error = '';
-  loading = false;
+  error = signal('');
+  loading = signal(false);
 
   ngOnInit() {
     this.title.setTitle('Login - KickCourt');
@@ -34,16 +35,16 @@ export class Login implements OnInit {
   }
 
   onSubmit() {
-    this.loading = true;
-    this.error = '';
+    this.loading.set(true);
+    this.error.set('');
     this.authService.login(this.credentials).subscribe({
       next: () => {
         this.authService.loadProfile();
-        this.router.navigate(['/fields']);
+        this.router.navigate(['/courts']);
       },
       error: (err: { error?: { detail?: string } }) => {
-        this.loading = false;
-        this.error = err.error?.detail || 'auth.wrongCredentials';
+        this.loading.set(false);
+        this.error.set(err.error?.detail || 'auth.wrongCredentials');
       },
     });
   }

@@ -1,9 +1,9 @@
 <div class="max-w-4xl mx-auto px-4 py-8">
   <h1 class="text-3xl font-bold text-gray-900 mb-8">{{ 'bookings.myBookingsTitle' | translate }}</h1>
 
-  @if (loading) {
+  @if (loading()) {
     <div class="text-center py-12 text-gray-500">{{ 'common.loading' | translate }}</div>
-  } @else if (bookings.length === 0) {
+  } @else if (bookings().length === 0) {
     <div class="text-center py-12">
       <p class="text-gray-500 mb-4">{{ 'bookings.noBookings' | translate }}</p>
       <a routerLink="/courts" class="bg-emerald-600 text-white py-2.5 px-6 rounded-xl hover:bg-emerald-700 font-medium transition-colors">
@@ -24,7 +24,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          @for (b of bookings; track b.id) {
+          @for (b of bookings(); track b.id) {
             <tr class="hover:bg-gray-50 cursor-pointer" [routerLink]="['/bookings', b.id]">
               <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ b.court_name }}</td>
               <td class="px-6 py-4 text-sm text-gray-600">{{ b.date }}</td>

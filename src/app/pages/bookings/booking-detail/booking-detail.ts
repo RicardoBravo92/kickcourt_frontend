@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BookingService } from '../../../services/booking';
 import { ToastService } from '../../../services/toast';
 import { Booking } from '../../../models/booking';
@@ -10,39 +11,42 @@ import { TranslatePipe } from '../../../pipes/translate';
   imports: [RouterLink, TranslatePipe],
   templateUrl: './booking-detail.html',
   styleUrl: './booking-detail.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookingDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private bookingService = inject(BookingService);
   private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
 
-  booking: Booking | null = null;
-  loading = true;
-  cancelling = false;
+  booking = signal<Booking | null>(null);
+  loading = signal(true);
+  cancelling = signal(false);
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.bookingService.getBookingById(id).subscribe({
+    this.bookingService.getBookingById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (b: Booking) => {
-        this.booking = b;
-        this.loading = false;
+        this.booking.set(b);
+        this.loading.set(false);
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 
   cancelBooking() {
-    if (!this.booking?.id) return;
-    this.cancelling = true;
-    this.bookingService.cancelBooking(this.booking.id).subscribe({
+    const booking = this.booking();
+    if (!booking?.id) return;
+    this.cancelling.set(true);
+    this.bookingService.cancelBooking(booking.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        if (this.booking) this.booking.status = 'CANCELLED';
-        this.cancelling = false;
+        this.booking.update(b => (b ? { ...b, status: 'CANCELLED' } : b));
+        this.cancelling.set(false);
         this.toast.success('toast.bookingCancelled');
       },
       error: () => {
-        this.cancelling = false;
+        this.cancelling.set(false);
         this.toast.error('toast.cancelError');
       },
     });

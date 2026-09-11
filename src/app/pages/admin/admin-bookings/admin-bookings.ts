@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BookingService } from '../../../services/booking';
 import { ToastService } from '../../../services/toast';
 import { Booking } from '../../../models/booking';
@@ -10,31 +11,33 @@ import { TranslatePipe } from '../../../pipes/translate';
   imports: [RouterLink, TranslatePipe],
   templateUrl: './admin-bookings.html',
   styleUrl: './admin-bookings.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminBookings implements OnInit {
   private bookingService = inject(BookingService);
   private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
 
-  bookings: Booking[] = [];
-  loading = true;
+  bookings = signal<Booking[]>([]);
+  loading = signal(true);
 
   ngOnInit() {
     this.loadBookings();
   }
 
   loadBookings() {
-    this.loading = true;
-    this.bookingService.getBookings().subscribe({
+    this.loading.set(true);
+    this.bookingService.getBookings().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (b: Booking[]) => {
-        this.bookings = b;
-        this.loading = false;
+        this.bookings.set(b);
+        this.loading.set(false);
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 
   cancelBooking(id: number) {
-    this.bookingService.cancelBooking(id).subscribe({
+    this.bookingService.cancelBooking(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('toast.bookingCancelled');
         this.loadBookings();
@@ -44,7 +47,7 @@ export class AdminBookings implements OnInit {
   }
 
   completeBooking(id: number) {
-    this.bookingService.completeBooking(id).subscribe({
+    this.bookingService.completeBooking(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('toast.bookingCompleted');
         this.loadBookings();
@@ -54,7 +57,7 @@ export class AdminBookings implements OnInit {
   }
 
   confirmBooking(id: number) {
-    this.bookingService.confirmBooking(id).subscribe({
+    this.bookingService.confirmBooking(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('toast.bookingConfirmed');
         this.loadBookings();
@@ -64,7 +67,7 @@ export class AdminBookings implements OnInit {
   }
 
   restoreBooking(id: number) {
-    this.bookingService.restoreBooking(id).subscribe({
+    this.bookingService.restoreBooking(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('toast.bookingRestored');
         this.loadBookings();

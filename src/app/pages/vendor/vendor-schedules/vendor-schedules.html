@@ -9,18 +9,18 @@
     <select [(ngModel)]="selectedCourtId" (change)="onCourtChange()"
             class="w-full max-w-md px-3 py-2.5 border border-gray-300 rounded-xl focus:ring-emerald-500 focus:border-emerald-500">
       <option [ngValue]="null">{{ 'fields.allF' | translate }}</option>
-      @for (court of courts; track court.id) {
+      @for (court of courts(); track court.id) {
         <option [ngValue]="court.id">{{ court.name }}</option>
       }
     </select>
   </div>
 
-  @if (error) {
-    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">{{ error }}</div>
+  @if (error()) {
+    <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-xl text-sm mb-4">{{ error() }}</div>
   }
 
   @if (selectedCourtId) {
-    @if (loading) {
+    @if (loading()) {
       <div class="text-center py-12 text-gray-500">{{ 'common.loading' | translate }}</div>
     } @else {
       <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -53,7 +53,7 @@
                            class="h-4 w-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500" />
                   </td>
                   <td class="px-6 py-4 text-sm space-x-2">
-                    <button (click)="saveSchedule(schedule)" [disabled]="saving"
+                    <button (click)="saveSchedule(schedule)" [disabled]="saving()"
                             class="text-emerald-600 hover:text-emerald-800 disabled:opacity-50 font-medium">{{ 'common.save' | translate }}</button>
                     <button (click)="deleteSchedule(schedule.id)" class="text-red-600 hover:text-red-800 font-medium">{{ 'common.delete' | translate }}</button>
                   </td>

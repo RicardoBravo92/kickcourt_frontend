@@ -1,5 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BookingService } from '../../../services/booking';
 import { Booking } from '../../../models/booking';
 import { TranslatePipe } from '../../../pipes/translate';
@@ -9,20 +10,22 @@ import { TranslatePipe } from '../../../pipes/translate';
   imports: [RouterLink, TranslatePipe],
   templateUrl: './booking-list.html',
   styleUrl: './booking-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookingList implements OnInit {
   private bookingService = inject(BookingService);
+  private destroyRef = inject(DestroyRef);
 
-  bookings: Booking[] = [];
-  loading = true;
+  bookings = signal<Booking[]>([]);
+  loading = signal(true);
 
   ngOnInit() {
-    this.bookingService.getMyBookings().subscribe({
+    this.bookingService.getMyBookings().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (bookings: Booking[]) => {
-        this.bookings = bookings;
-        this.loading = false;
+        this.bookings.set(bookings);
+        this.loading.set(false);
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 

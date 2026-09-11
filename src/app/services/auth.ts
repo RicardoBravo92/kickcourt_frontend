@@ -4,6 +4,18 @@ import { Observable, tap, Subject, map, take, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthResponse, User, UserRole } from '../models/user';
 
+function decodeJwtPayload(token: string): Record<string, unknown> | null {
+  try {
+    const payload = token.split('.')[1];
+    if (!payload) return null;
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+    return JSON.parse(atob(padded)) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -103,17 +115,17 @@ export class AuthService {
       this.currentUser.set(null);
       return;
     }
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      this.currentUser.set({
-        id: payload.user_id,
-        username: payload.username || '',
-        role: payload.role as UserRole,
-        email: payload.email,
-      });
-    } catch {
+    const payload = decodeJwtPayload(token);
+    if (!payload) {
       this.currentUser.set(null);
+      return;
     }
+    this.currentUser.set({
+      id: payload['user_id'] as number,
+      username: (payload['username'] as string) || '',
+      role: payload['role'] as UserRole,
+      email: payload['email'] as string,
+    });
   }
 
   getUserRole(): UserRole | null {

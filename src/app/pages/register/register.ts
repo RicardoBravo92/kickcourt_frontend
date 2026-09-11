@@ -1,7 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../services/auth';
 import { ToastService } from '../../services/toast';
 import { TranslatePipe } from '../../pipes/translate';
@@ -11,11 +12,13 @@ import { TranslatePipe } from '../../pipes/translate';
   imports: [FormsModule, RouterLink, TranslatePipe],
   templateUrl: './register.html',
   styleUrl: './register.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Register implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
   private meta = inject(Meta);
   private title = inject(Title);
 
@@ -26,14 +29,23 @@ export class Register implements OnInit {
     password_confirm: '',
     phone_number: '',
   };
-  error = '';
-  loading = false;
-  usernameTaken = false;
-  emailTaken = false;
-  checkingUsername = false;
-  checkingEmail = false;
+  error = signal('');
+  loading = signal(false);
+  usernameTaken = signal(false);
+  emailTaken = signal(false);
+  checkingUsername = signal(false);
+  checkingEmail = signal(false);
   private usernameDebounce: ReturnType<typeof setTimeout> | undefined;
   private emailDebounce: ReturnType<typeof setTimeout> | undefined;
+  private usernameCheckId = 0;
+  private emailCheckId = 0;
+
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      clearTimeout(this.usernameDebounce);
+      clearTimeout(this.emailDebounce);
+    });
+  }
 
   ngOnInit() {
     this.title.setTitle('Register - KickCourt');
@@ -48,58 +60,71 @@ export class Register implements OnInit {
   }
 
   onSubmit() {
-    this.loading = true;
-    this.error = '';
-    this.authService.register(this.userData).subscribe({
+    this.loading.set(true);
+    this.error.set('');
+    this.authService.register(this.userData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('toast.registerSuccess');
         this.router.navigate(['/login']);
       },
       error: (err: { error: Record<string, unknown> | string | null }) => {
-        this.loading = false;
+        this.loading.set(false);
         this.toast.error('toast.registerError');
-        this.error = this.extractError(err.error);
+        this.error.set(this.extractError(err.error));
       },
     });
   }
 
   onUsernameChange() {
-    this.usernameDebounce && clearTimeout(this.usernameDebounce);
+    clearTimeout(this.usernameDebounce);
     const value = this.userData.username.trim();
     if (value.length < 3) {
-      this.checkingUsername = false;
-      this.usernameTaken = false;
+      this.checkingUsername.set(false);
+      this.usernameTaken.set(false);
       return;
     }
-    this.checkingUsername = true;
-    this.usernameTaken = false;
-    this.usernameDebounce = setTimeout(() => this.checkAvailability({ username: value }, 'username'), 500);
+    this.checkingUsername.set(true);
+    this.usernameTaken.set(false);
+    this.usernameDebounce = setTimeout(() => {
+      this.checkAvailability({ username: value }, 'username', ++this.usernameCheckId);
+    }, 500);
   }
 
   onEmailChange() {
-    this.emailDebounce && clearTimeout(this.emailDebounce);
+    clearTimeout(this.emailDebounce);
     const value = this.userData.email.trim();
     if (!value.includes('@')) {
-      this.checkingEmail = false;
-      this.emailTaken = false;
+      this.checkingEmail.set(false);
+      this.emailTaken.set(false);
       return;
     }
-    this.checkingEmail = true;
-    this.emailTaken = false;
-    this.emailDebounce = setTimeout(() => this.checkAvailability({ email: value }, 'email'), 500);
+    this.checkingEmail.set(true);
+    this.emailTaken.set(false);
+    this.emailDebounce = setTimeout(() => {
+      this.checkAvailability({ email: value }, 'email', ++this.emailCheckId);
+    }, 500);
   }
 
-  private checkAvailability(data: { username?: string; email?: string }, field: 'username' | 'email') {
-    this.authService.checkAvailability(data).subscribe({
+  private checkAvailability(data: { username?: string; email?: string }, field: 'username' | 'email', requestId: number) {
+    this.authService.checkAvailability(data).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
-        this.checkingUsername = false;
-        this.checkingEmail = false;
-        this.usernameTaken = field === 'username' ? res.username_available === false : this.usernameTaken;
-        this.emailTaken = field === 'email' ? res.email_available === false : this.emailTaken;
+        if (field === 'username') {
+          if (requestId !== this.usernameCheckId) return;
+          this.checkingUsername.set(false);
+          this.usernameTaken.set(res.username_available === false);
+        } else {
+          if (requestId !== this.emailCheckId) return;
+          this.checkingEmail.set(false);
+          this.emailTaken.set(res.email_available === false);
+        }
       },
       error: () => {
-        this.checkingUsername = false;
-        this.checkingEmail = false;
+        if (field === 'username' && requestId === this.usernameCheckId) {
+          this.checkingUsername.set(false);
+        }
+        if (field === 'email' && requestId === this.emailCheckId) {
+          this.checkingEmail.set(false);
+        }
       },
     });
   }

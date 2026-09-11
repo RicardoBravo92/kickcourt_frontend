@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CourtService, CourtFilters } from '../../../services/court';
 import { AuthService } from '../../../services/auth';
 import { Court, SportType, SurfaceType } from '../../../models/court';
@@ -11,17 +12,22 @@ import { TranslatePipe } from '../../../pipes/translate';
   imports: [RouterLink, FormsModule, TranslatePipe],
   templateUrl: './court-list.html',
   styleUrl: './court-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CourtList implements OnInit {
   private courtService = inject(CourtService);
-  public authService = inject(AuthService);
+  private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
 
-  courts: Court[] = [];
-  loading = true;
+  courts = signal<Court[]>([]);
+  loading = signal(true);
   filters: CourtFilters = {};
-  totalCount = 0;
+  totalCount = signal(0);
 
-  activeFaqIndex: number | null = null;
+  activeFaqIndex = signal<number | null>(null);
+
+  user = this.authService.currentUser;
+  isLoggedIn = computed(() => this.user() !== null);
 
   sportTypes: { value: SportType; label: string }[] = [
     { value: 'FOOTBALL', label: 'Fútbol' },
@@ -48,14 +54,14 @@ export class CourtList implements OnInit {
   }
 
   loadCourts() {
-    this.loading = true;
-    this.courtService.getCourts(this.filters).subscribe({
+    this.loading.set(true);
+    this.courtService.getCourts(this.filters).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (courts: Court[]) => {
-        this.courts = courts;
-        this.totalCount = courts.length;
-        this.loading = false;
+        this.courts.set(courts);
+        this.totalCount.set(courts.length);
+        this.loading.set(false);
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 
@@ -70,7 +76,7 @@ export class CourtList implements OnInit {
   }
 
   toggleFaq(index: number) {
-    this.activeFaqIndex = this.activeFaqIndex === index ? null : index;
+    this.activeFaqIndex.set(this.activeFaqIndex() === index ? null : index);
   }
 
   getSportName(sport: string): string {

@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslatePipe } from '../../../pipes/translate';
 import { VendorService } from '../../../services/vendor';
 import { ToastService } from '../../../services/toast';
@@ -11,31 +11,33 @@ import { Vendor } from '../../../models/vendor';
   imports: [RouterLink, TranslatePipe],
   templateUrl: './admin-vendors.html',
   styleUrl: './admin-vendors.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminVendors implements OnInit {
   private vendorService = inject(VendorService);
   private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
 
-  vendors: Vendor[] = [];
-  loading = true;
+  vendors = signal<Vendor[]>([]);
+  loading = signal(true);
 
   ngOnInit() {
     this.loadVendors();
   }
 
   loadVendors() {
-    this.loading = true;
-    this.vendorService.getVendors().subscribe({
+    this.loading.set(true);
+    this.vendorService.getVendors().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (v) => {
-        this.vendors = v;
-        this.loading = false;
+        this.vendors.set(v);
+        this.loading.set(false);
       },
-      error: () => (this.loading = false),
+      error: () => this.loading.set(false),
     });
   }
 
   approveVendor(id: number) {
-    this.vendorService.approveVendor(id).subscribe({
+    this.vendorService.approveVendor(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('toast.vendorApproved');
         this.loadVendors();
@@ -45,7 +47,7 @@ export class AdminVendors implements OnInit {
   }
 
   rejectVendor(id: number) {
-    this.vendorService.rejectVendor(id).subscribe({
+    this.vendorService.rejectVendor(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success('toast.vendorRejected');
         this.loadVendors();

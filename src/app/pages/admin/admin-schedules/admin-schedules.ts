@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CourtService } from '../../../services/court';
 import { CourtScheduleService } from '../../../services/court-schedule';
 import { ToastService } from '../../../services/toast';
@@ -12,18 +13,20 @@ import { TranslatePipe } from '../../../pipes/translate';
   imports: [RouterLink, FormsModule, TranslatePipe],
   templateUrl: './admin-schedules.html',
   styleUrl: './admin-schedules.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminSchedules implements OnInit {
   private courtService = inject(CourtService);
   private scheduleService = inject(CourtScheduleService);
   private toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
 
-  courts: Court[] = [];
+  courts = signal<Court[]>([]);
   selectedCourtId: number | null = null;
-  schedules: CourtSchedule[] = [];
-  loading = false;
-  saving = false;
-  error = '';
+  schedules = signal<CourtSchedule[]>([]);
+  loading = signal(false);
+  saving = signal(false);
+  error = signal('');
 
   daysOfWeek = [
     { value: 0, label: 'schedules.monday' },
@@ -34,37 +37,36 @@ export class AdminSchedules implements OnInit {
     { value: 5, label: 'schedules.saturday' },
     { value: 6, label: 'schedules.sunday' },
   ];
-  selectedFieldId: any;
 
   ngOnInit() {
-    this.courtService.getCourts().subscribe({
-      next: (c) => (this.courts = c),
+    this.courtService.getCourts().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (c) => this.courts.set(c),
     });
   }
 
   onFieldChange() {
-    const fieldId = this.selectedFieldId;
-    this.schedules = [];
-    this.error = '';
+    const fieldId = this.selectedCourtId;
+    this.schedules.set([]);
+    this.error.set('');
     if (fieldId === null) {
-      this.schedules = [];
+      this.schedules.set([]);
       return;
     }
-    this.loading = true;
-    this.scheduleService.getSchedules(fieldId).subscribe({
+    this.loading.set(true);
+    this.scheduleService.getSchedules(fieldId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (s) => {
-        if (this.selectedFieldId !== fieldId) return;
-        this.schedules = s;
-        this.loading = false;
+        if (this.selectedCourtId !== fieldId) return;
+        this.schedules.set(s);
+        this.loading.set(false);
       },
       error: () => {
-        if (this.selectedFieldId === fieldId) this.loading = false;
+        if (this.selectedCourtId === fieldId) this.loading.set(false);
       },
     });
   }
 
   getScheduleForDay(day: number): CourtSchedule | undefined {
-    return this.schedules.find((s) => s.day_of_week === day);
+    return this.schedules().find((s) => s.day_of_week === day);
   }
 
   updateScheduleTime(day: number, field: string, value: string) {
@@ -90,41 +92,41 @@ export class AdminSchedules implements OnInit {
       close_time: '22:00',
       is_active: true,
     };
-    this.scheduleService.createSchedule(newSchedule).subscribe({
+    this.scheduleService.createSchedule(newSchedule).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (s) => {
-        this.schedules.push(s);
+        this.schedules.update(list => [...list, s]);
         this.toast.success('toast.scheduleCreated');
       },
       error: () => {
-        this.error = 'Error creating schedule';
+        this.error.set('Error creating schedule');
         this.toast.error('toast.scheduleError');
       },
     });
   }
 
   saveSchedule(schedule: CourtSchedule) {
-    this.saving = true;
-    this.scheduleService.updateSchedule(schedule.id, schedule).subscribe({
+    this.saving.set(true);
+    this.scheduleService.updateSchedule(schedule.id, schedule).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.saving = false;
+        this.saving.set(false);
         this.toast.success('toast.scheduleUpdated');
       },
       error: () => {
-        this.saving = false;
-        this.error = 'Error saving schedule';
+        this.saving.set(false);
+        this.error.set('Error saving schedule');
         this.toast.error('toast.scheduleError');
       },
     });
   }
 
   deleteSchedule(id: number) {
-    this.scheduleService.deleteSchedule(id).subscribe({
+    this.scheduleService.deleteSchedule(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.schedules = this.schedules.filter((s) => s.id !== id);
+        this.schedules.update(list => list.filter((s) => s.id !== id));
         this.toast.success('toast.scheduleDeleted');
       },
       error: () => {
-        this.error = 'Error deleting schedule';
+        this.error.set('Error deleting schedule');
         this.toast.error('toast.scheduleError');
       },
     });

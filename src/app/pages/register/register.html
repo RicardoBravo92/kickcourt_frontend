@@ -5,9 +5,9 @@
       <p class="mt-2 text-sm text-gray-600">{{ 'auth.registerSubtitle' | translate }}</p>
     </div>
 
-    @if (error) {
+    @if (error()) {
       <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-md text-sm">
-        {{ error | translate }}
+        {{ error() | translate }}
       </div>
     }
 
@@ -18,9 +18,9 @@
           <input id="username" type="text" [(ngModel)]="userData.username" name="username" required
                  (ngModelChange)="onUsernameChange()"
                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500" />
-          @if (checkingUsername) {
+          @if (checkingUsername()) {
             <p class="mt-1 text-xs text-gray-500">{{ 'auth.checking' | translate }}</p>
-          } @else if (usernameTaken) {
+          } @else if (usernameTaken()) {
             <p class="mt-1 text-xs text-red-600">{{ 'auth.usernameTaken' | translate }}</p>
           }
         </div>
@@ -29,9 +29,9 @@
           <input id="email" type="email" [(ngModel)]="userData.email" name="email" required
                  (ngModelChange)="onEmailChange()"
                  class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500" />
-          @if (checkingEmail) {
+          @if (checkingEmail()) {
             <p class="mt-1 text-xs text-gray-500">{{ 'auth.checking' | translate }}</p>
-          } @else if (emailTaken) {
+          } @else if (emailTaken()) {
             <p class="mt-1 text-xs text-red-600">{{ 'auth.emailTaken' | translate }}</p>
           }
         </div>
@@ -52,9 +52,9 @@
         </div>
       </div>
 
-      <button type="submit" [disabled]="loading || usernameTaken || emailTaken || checkingUsername || checkingEmail"
+      <button type="submit" [disabled]="loading() || usernameTaken() || emailTaken() || checkingUsername() || checkingEmail()"
               class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50">
-        @if (loading) { {{ 'auth.registering' | translate }} } @else { {{ 'auth.registerBtn' | translate }} }
+        @if (loading()) { {{ 'auth.registering' | translate }} } @else { {{ 'auth.registerBtn' | translate }} }
       </button>
 
       <p class="text-center text-sm text-gray-600">
