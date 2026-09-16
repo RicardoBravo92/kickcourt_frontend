@@ -3,13 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { CourtSchedule } from '../models/court';
-
-interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: T[];
-}
+import { PaginatedResponse, buildHttpParams, extractResults } from './paginated';
 
 @Injectable({ providedIn: 'root' })
 export class CourtScheduleService {
@@ -17,13 +11,11 @@ export class CourtScheduleService {
   private apiUrl = `${environment.apiUrl}/court-schedules/`;
 
   getSchedules(courtId?: number): Observable<CourtSchedule[]> {
-    let url = this.apiUrl;
-    if (courtId) {
-      url += `?court=${courtId}`;
-    }
-    return this.http.get<PaginatedResponse<CourtSchedule> | CourtSchedule[]>(url).pipe(
-      map(res => Array.isArray(res) ? res : res.results)
-    );
+    return this.http
+      .get<PaginatedResponse<CourtSchedule> | CourtSchedule[]>(this.apiUrl, {
+        params: buildHttpParams({ court: courtId }),
+      })
+      .pipe(map((res) => extractResults(res)));
   }
 
   createSchedule(schedule: Partial<CourtSchedule>): Observable<CourtSchedule> {

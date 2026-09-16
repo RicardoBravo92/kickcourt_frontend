@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -57,7 +64,11 @@ export class CourtForm implements OnInit {
   surfaces: { value: SurfaceType; label: string; sports: SportType[] }[] = [
     { value: 'SYNTHETIC', label: 'Sintético', sports: ['FOOTBALL', 'PADEL', 'HOCKEY'] },
     { value: 'NATURAL', label: 'Natural', sports: ['FOOTBALL', 'HOCKEY'] },
-    { value: 'INDOOR', label: 'Indoor', sports: ['FOOTBALL', 'PADEL', 'TENNIS', 'BASKETBALL', 'VOLLEYBALL', 'HOCKEY'] },
+    {
+      value: 'INDOOR',
+      label: 'Indoor',
+      sports: ['FOOTBALL', 'PADEL', 'TENNIS', 'BASKETBALL', 'VOLLEYBALL', 'HOCKEY'],
+    },
     { value: 'CLAY', label: 'Polvo de ladrillo', sports: ['TENNIS'] },
     { value: 'GRASS', label: 'Césped', sports: ['TENNIS', 'HOCKEY'] },
     { value: 'HARD', label: 'Dura', sports: ['TENNIS', 'BASKETBALL', 'VOLLEYBALL'] },
@@ -69,18 +80,18 @@ export class CourtForm implements OnInit {
     this.courtId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.courtId) {
       this.isEdit = true;
-      this.courtService.getCourtById(this.courtId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (c: Court) => (this.court = c),
-        error: () => {
-          const returnPath = this.route.snapshot.url[0]?.path === 'vendor' ? '/vendor/courts' : '/admin';
-          this.router.navigate([returnPath]);
-        },
-      });
+      this.courtService
+        .getCourtById(this.courtId)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (c: Court) => (this.court = c),
+          error: () => this.router.navigate([this.returnPath]),
+        });
     }
   }
 
   get filteredSurfaces() {
-    return this.surfaces.filter(s => s.sports.includes(this.court.sport_type as SportType));
+    return this.surfaces.filter((s) => s.sports.includes(this.court.sport_type as SportType));
   }
 
   get availablePlayers() {
@@ -93,11 +104,15 @@ export class CourtForm implements OnInit {
       HOCKEY: [5, 6, 11],
     };
     const valid = options[this.court.sport_type as SportType] || [5];
-    const surfaceSport = this.filteredSurfaces.find(s => s.value === this.court.surface);
+    const surfaceSport = this.filteredSurfaces.find((s) => s.value === this.court.surface);
     if (!surfaceSport) {
       this.court.surface = this.filteredSurfaces[0]?.value || 'SYNTHETIC';
     }
-    return this.playerOptions.filter(p => valid.includes(p.value));
+    return this.playerOptions.filter((p) => valid.includes(p.value));
+  }
+
+  private get returnPath(): string {
+    return this.route.snapshot.url[0]?.path === 'dashboard' ? '/dashboard/courts' : '/admin';
   }
 
   onSubmit() {
@@ -111,8 +126,7 @@ export class CourtForm implements OnInit {
     obs.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toast.success(this.isEdit ? 'toast.courtUpdated' : 'toast.courtCreated');
-        const returnPath = this.route.snapshot.url[0]?.path === 'vendor' ? '/vendor/courts' : '/admin';
-        this.router.navigate([returnPath]);
+        this.router.navigate([this.returnPath]);
       },
       error: (err: { error: Record<string, unknown> | null }) => {
         this.loading.set(false);

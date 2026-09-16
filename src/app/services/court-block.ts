@@ -3,13 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { CourtBlock } from '../models/court';
-
-interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: T[];
-}
+import { PaginatedResponse, buildHttpParams, extractResults } from './paginated';
 
 @Injectable({ providedIn: 'root' })
 export class CourtBlockService {
@@ -17,13 +11,11 @@ export class CourtBlockService {
   private apiUrl = `${environment.apiUrl}/court-blocks/`;
 
   getBlocks(courtId?: number): Observable<CourtBlock[]> {
-    let url = this.apiUrl;
-    if (courtId) {
-      url += `?court=${courtId}`;
-    }
-    return this.http.get<PaginatedResponse<CourtBlock> | CourtBlock[]>(url).pipe(
-      map(res => Array.isArray(res) ? res : res.results)
-    );
+    return this.http
+      .get<PaginatedResponse<CourtBlock> | CourtBlock[]>(this.apiUrl, {
+        params: buildHttpParams({ court: courtId }),
+      })
+      .pipe(map((res) => extractResults(res)));
   }
 
   createBlock(block: Partial<CourtBlock>): Observable<CourtBlock> {

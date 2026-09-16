@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Booking } from '../models/booking';
+import { PaginatedResponse, buildHttpParams, extractResults } from './paginated';
 
 export interface BookingFilters {
   status?: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
@@ -11,36 +12,19 @@ export interface BookingFilters {
   search?: string;
 }
 
-interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: T[];
-}
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BookingService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/bookings/`;
 
-  private extractResults<T>(res: PaginatedResponse<T> | T[]): T[] {
-    return Array.isArray(res) ? res : res.results;
-  }
-
   getBookings(filters?: BookingFilters): Observable<Booking[]> {
-    let params = new HttpParams();
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
-          params = params.set(key, String(value));
-        }
-      });
-    }
-    return this.http.get<PaginatedResponse<Booking> | Booking[]>(this.apiUrl, { params }).pipe(
-      map(res => this.extractResults(res))
-    );
+    return this.http
+      .get<PaginatedResponse<Booking> | Booking[]>(this.apiUrl, {
+        params: buildHttpParams(filters),
+      })
+      .pipe(map((res) => extractResults(res)));
   }
 
   getBookingById(id: number): Observable<Booking> {
@@ -68,20 +52,20 @@ export class BookingService {
   }
 
   getMyBookings(): Observable<Booking[]> {
-    return this.http.get<PaginatedResponse<Booking> | Booking[]>(`${this.apiUrl}my_bookings/`).pipe(
-      map(res => this.extractResults(res))
-    );
+    return this.http
+      .get<PaginatedResponse<Booking> | Booking[]>(`${this.apiUrl}my_bookings/`)
+      .pipe(map((res) => extractResults(res)));
   }
 
   getPendingBookings(): Observable<Booking[]> {
-    return this.http.get<PaginatedResponse<Booking> | Booking[]>(`${this.apiUrl}pending/`).pipe(
-      map(res => this.extractResults(res))
-    );
+    return this.http
+      .get<PaginatedResponse<Booking> | Booking[]>(`${this.apiUrl}pending/`)
+      .pipe(map((res) => extractResults(res)));
   }
 
   getDeletedBookings(): Observable<Booking[]> {
-    return this.http.get<PaginatedResponse<Booking> | Booking[]>(`${this.apiUrl}deleted/`).pipe(
-      map(res => this.extractResults(res))
-    );
+    return this.http
+      .get<PaginatedResponse<Booking> | Booking[]>(`${this.apiUrl}deleted/`)
+      .pipe(map((res) => extractResults(res)));
   }
 }

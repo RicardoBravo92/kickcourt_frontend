@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Court } from '../models/court';
+import { PaginatedResponse, buildHttpParams, extractResults } from './paginated';
 
 export interface CourtFilters {
   sport_type?: string;
@@ -10,13 +11,6 @@ export interface CourtFilters {
   is_active?: boolean;
   search?: string;
   vendor?: number;
-}
-
-interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: T[];
 }
 
 export interface TimeSlot {
@@ -38,22 +32,10 @@ export class CourtService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/courts/`;
 
-  private extractResults<T>(res: PaginatedResponse<T> | T[]): T[] {
-    return Array.isArray(res) ? res : res.results;
-  }
-
   getCourts(filters?: CourtFilters): Observable<Court[]> {
-    let params = new HttpParams();
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
-          params = params.set(key, String(value));
-        }
-      });
-    }
-    return this.http.get<PaginatedResponse<Court> | Court[]>(this.apiUrl, { params }).pipe(
-      map(res => this.extractResults(res))
-    );
+    return this.http
+      .get<PaginatedResponse<Court> | Court[]>(this.apiUrl, { params: buildHttpParams(filters) })
+      .pipe(map((res) => extractResults(res)));
   }
 
   getCourtById(id: number): Observable<Court> {
@@ -61,7 +43,9 @@ export class CourtService {
   }
 
   getCourtAvailability(id: number, date: string): Observable<CourtAvailability> {
-    return this.http.get<CourtAvailability>(`${this.apiUrl}${id}/availability/`, { params: { date } });
+    return this.http.get<CourtAvailability>(`${this.apiUrl}${id}/availability/`, {
+      params: { date },
+    });
   }
 
   createCourt(court: Partial<Court>): Observable<Court> {

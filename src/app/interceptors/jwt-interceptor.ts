@@ -19,18 +19,30 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && authService.getRefreshToken() && !req.url.includes('/auth/refresh/')) {
+      if (
+        error.status === 401 &&
+        authService.getRefreshToken() &&
+        !req.url.includes('/auth/refresh/')
+      ) {
         return authService.refreshToken().pipe(
           switchMap((newToken) => {
-            if (newToken) {
-              const cloned = req.clone({
-                setHeaders: { Authorization: `Bearer ${newToken}` },
-              });
-              return next(cloned);
+            if (!newToken) {
+              router.navigate(['/login']);
+              return throwError(() => error);
             }
-            router.navigate(['/login']);
-            return throwError(() => error);
-          })
+            const cloned = req.clone({
+              setHeaders: { Authorization: `Bearer ${newToken}` },
+            });
+            return next(cloned).pipe(
+              catchError((retryError: HttpErrorResponse) => {
+                if (retryError.status === 401) {
+                  authService.logout();
+                  router.navigate(['/login']);
+                }
+                return throwError(() => retryError);
+              }),
+            );
+          }),
         );
       }
 
@@ -40,6 +52,6 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       return throwError(() => error);
-    })
+    }),
   );
 };
