@@ -31,20 +31,9 @@ export class Register implements OnInit {
   };
   error = signal('');
   loading = signal(false);
-  usernameTaken = signal(false);
-  emailTaken = signal(false);
-  checkingUsername = signal(false);
-  checkingEmail = signal(false);
-  private usernameDebounce: ReturnType<typeof setTimeout> | undefined;
-  private emailDebounce: ReturnType<typeof setTimeout> | undefined;
-  private usernameCheckId = 0;
-  private emailCheckId = 0;
 
   constructor() {
-    this.destroyRef.onDestroy(() => {
-      clearTimeout(this.usernameDebounce);
-      clearTimeout(this.emailDebounce);
-    });
+    this.destroyRef.onDestroy(() => {});
   }
 
   ngOnInit() {
@@ -71,60 +60,6 @@ export class Register implements OnInit {
         this.loading.set(false);
         this.toast.error('toast.registerError');
         this.error.set(this.extractError(err.error));
-      },
-    });
-  }
-
-  onUsernameChange() {
-    clearTimeout(this.usernameDebounce);
-    const value = this.userData.username.trim();
-    if (value.length < 3) {
-      this.checkingUsername.set(false);
-      this.usernameTaken.set(false);
-      return;
-    }
-    this.checkingUsername.set(true);
-    this.usernameTaken.set(false);
-    this.usernameDebounce = setTimeout(() => {
-      this.checkAvailability({ username: value }, 'username', ++this.usernameCheckId);
-    }, 500);
-  }
-
-  onEmailChange() {
-    clearTimeout(this.emailDebounce);
-    const value = this.userData.email.trim();
-    if (!value.includes('@')) {
-      this.checkingEmail.set(false);
-      this.emailTaken.set(false);
-      return;
-    }
-    this.checkingEmail.set(true);
-    this.emailTaken.set(false);
-    this.emailDebounce = setTimeout(() => {
-      this.checkAvailability({ email: value }, 'email', ++this.emailCheckId);
-    }, 500);
-  }
-
-  private checkAvailability(data: { username?: string; email?: string }, field: 'username' | 'email', requestId: number) {
-    this.authService.checkAvailability(data).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        if (field === 'username') {
-          if (requestId !== this.usernameCheckId) return;
-          this.checkingUsername.set(false);
-          this.usernameTaken.set(res.username_available === false);
-        } else {
-          if (requestId !== this.emailCheckId) return;
-          this.checkingEmail.set(false);
-          this.emailTaken.set(res.email_available === false);
-        }
-      },
-      error: () => {
-        if (field === 'username' && requestId === this.usernameCheckId) {
-          this.checkingUsername.set(false);
-        }
-        if (field === 'email' && requestId === this.emailCheckId) {
-          this.checkingEmail.set(false);
-        }
       },
     });
   }

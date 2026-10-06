@@ -46,7 +46,11 @@ export class AuthService {
   }
 
   checkAvailability(data: { username?: string; email?: string }): Observable<{ username_available: boolean | null; email_available: boolean | null }> {
-    return this.http.post<{ username_available: boolean | null; email_available: boolean | null }>(`${this.apiUrl}/check-availability/`, data);
+    return this.http.post<{ username_available: boolean | null; email_available: boolean | null }>(`${this.apiUrl}/check-availability/`, data).pipe(
+      // Backend now returns generic response to prevent user enumeration
+      // We can't actually check availability anymore, so return null (unknown)
+      map(() => ({ username_available: null, email_available: null }))
+    );
   }
 
   getProfile(): Observable<User> {
