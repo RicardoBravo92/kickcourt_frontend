@@ -4,6 +4,7 @@ import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Booking } from '../models/booking';
 import { PaginatedResponse, buildHttpParams, extractResults } from './paginated';
+import { ChatMessagePayload } from './realtime';
 
 export interface BookingFilters {
   status?: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED';
@@ -67,5 +68,15 @@ export class BookingService {
     return this.http
       .get<PaginatedResponse<Booking> | Booking[]>(`${this.apiUrl}deleted/`)
       .pipe(map((res) => extractResults(res)));
+  }
+
+  /** Paginated chat history for a booking (WS complement for the REST fallback). */
+  getMessages(bookingId: number): Observable<PaginatedResponse<ChatMessagePayload>> {
+    return this.http.get<PaginatedResponse<ChatMessagePayload>>(`${this.apiUrl}${bookingId}/messages/`);
+  }
+
+  /** Persist a chat message over REST (used when the WS chat socket is down). */
+  postMessage(bookingId: number, text: string): Observable<ChatMessagePayload> {
+    return this.http.post<ChatMessagePayload>(`${this.apiUrl}${bookingId}/messages/`, { text });
   }
 }

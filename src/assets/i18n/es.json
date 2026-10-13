@@ -158,6 +158,28 @@
     "confirm": "Confirmar",
     "completedSuccess": "Reserva completada"
   },
+  "availability": {
+    "title": "Disponibilidad",
+    "live": "En vivo",
+    "selectDate": "Fecha",
+    "loading": "Cargando disponibilidad...",
+    "closed": "Cerrado",
+    "available": "Disponible",
+    "booked": "Ocupado",
+    "blocked": "Bloqueado",
+    "maintenance": "Mantenimiento",
+    "free": "Libre",
+    "occupied": "Ocupado"
+  },
+  "chat": {
+    "title": "Chat",
+    "online": "Conectado",
+    "reconnecting": "Reconectando...",
+    "loading": "Cargando mensajes...",
+    "empty": "No hay mensajes todavía. Escribe el primero.",
+    "placeholder": "Escribe un mensaje...",
+    "send": "Enviar"
+  },
   "admin": {
     "title": "Panel Admin",
     "newField": "+ Nueva Cancha",
@@ -199,6 +221,7 @@
   },
   "toast": {
     "bookingCreated": "Reserva creada correctamente",
+    "bookingUpdated": "Reserva actualizada",
     "bookingError": "No se pudo crear la reserva",
     "bookingCancelled": "Reserva cancelada",
     "bookingCompleted": "Reserva completada",
@@ -206,6 +229,9 @@
     "confirmError": "No se pudo confirmar",
     "bookingRestored": "Reserva restaurada",
     "cancelError": "No se pudo cancelar",
+    "completeError": "No se pudo completar",
+    "restoreError": "No se pudo restaurar",
+    "chatSendError": "No se pudo enviar el mensaje",
     "completeError": "No se pudo completar",
     "restoreError": "No se pudo restaurar",
     "csvExported": "Exportación descargada",

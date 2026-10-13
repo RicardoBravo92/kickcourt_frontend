@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CourtService, TimeSlot, CourtAvailability } from '../../../services/court';
+import { RealtimeService, CourtAvailabilityMessage } from '../../../services/realtime';
 import { todayLocalISO } from '../../../services/dates';
 import { Court, SportType, SurfaceType } from '../../../models/court';
 import { TranslatePipe } from '../../../pipes/translate';
@@ -19,6 +20,7 @@ export class CourtDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private courtService = inject(CourtService);
+  private realtime = inject(RealtimeService);
   private destroyRef = inject(DestroyRef);
   private meta = inject(Meta);
   private title = inject(Title);
@@ -47,8 +49,21 @@ export class CourtDetail implements OnInit {
         this.meta.updateTag({ name: 'twitter:description', content: court.description || `Book ${court.name} - ${this.getSportName(court.sport_type)} court on ${this.getSurfaceName(court.surface)}` });
         this.loading.set(false);
         this.loadAvailability();
+        this.listenLiveAvailability(id);
       },
       error: () => this.loading.set(false),
+    });
+  }
+
+  /** Apply live availability broadcasts when they target the selected date. */
+  private listenLiveAvailability(courtId: number) {
+    this.realtime.courtAvailability(courtId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (message: CourtAvailabilityMessage) => {
+        const current = this.availability();
+        if (!current || message.court_id !== courtId) return;
+        if (message.date !== this.selectedDate) return; // out-of-date broadcast
+        this.availability.set({ ...current, date: message.date, slots: message.slots });
+      },
     });
   }
 

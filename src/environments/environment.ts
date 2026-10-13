@@ -7,7 +7,14 @@ const normalizeApi = (url: string): string => {
   return url.includes('/api') ? url : `${url}/api`;
 };
 
+const toWs = (apiUrl: string): string => {
+  if (!apiUrl) return '';
+  const base = apiUrl.replace(/\/+$/, '').replace(/\/api$/, '');
+  return base.replace(/^http/, 'ws');
+};
+
 export const environment = {
   production: false,
   apiUrl: normalizeApi(rawApiUrl),
+  wsUrl: toWs(normalizeApi(rawApiUrl)),
 };

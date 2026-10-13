@@ -158,6 +158,28 @@
     "confirm": "Confirm",
     "completedSuccess": "Booking completed"
   },
+  "availability": {
+    "title": "Availability",
+    "live": "Live",
+    "selectDate": "Date",
+    "loading": "Loading availability...",
+    "closed": "Closed",
+    "available": "Available",
+    "booked": "Booked",
+    "blocked": "Blocked",
+    "maintenance": "Maintenance",
+    "free": "Free",
+    "occupied": "Occupied"
+  },
+  "chat": {
+    "title": "Chat",
+    "online": "Connected",
+    "reconnecting": "Reconnecting...",
+    "loading": "Loading messages...",
+    "empty": "No messages yet. Send the first one.",
+    "placeholder": "Type a message...",
+    "send": "Send"
+  },
   "admin": {
     "title": "Admin Panel",
     "newField": "+ New Field",
@@ -199,6 +221,7 @@
   },
   "toast": {
     "bookingCreated": "Booking created successfully",
+    "bookingUpdated": "Booking updated",
     "bookingError": "Could not create the booking",
     "bookingCancelled": "Booking cancelled",
     "bookingCompleted": "Booking completed",
@@ -208,6 +231,7 @@
     "cancelError": "Could not cancel",
     "completeError": "Could not complete",
     "restoreError": "Could not restore",
+    "chatSendError": "Could not send the message",
     "csvExported": "Export downloaded",
     "csvExportError": "Could not export the CSV",
     "blockCreated": "Block created",
