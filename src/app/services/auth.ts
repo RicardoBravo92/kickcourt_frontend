@@ -78,9 +78,15 @@ export class AuthService {
     this.refreshTokenInProgress = true;
 
     return new Observable<string>(observer => {
-      this.http.post<{ access: string }>(`${this.apiUrl}/auth/refresh/`, { refresh }).subscribe({
+      this.http.post<{ access: string; refresh?: string }>(`${this.apiUrl}/auth/refresh/`, { refresh }).subscribe({
         next: (response) => {
           localStorage.setItem('access_token', response.access);
+          // The backend rotates the refresh token (ROTATE_REFRESH_TOKENS +
+          // BLACKLIST_AFTER_ROTATION); the old one is blacklisted, so the
+          // replacement must be persisted or the session dies at the next refresh.
+          if (response.refresh) {
+            localStorage.setItem('refresh_token', response.refresh);
+          }
           this.refreshTokenInProgress = false;
           this.refreshTokenSubject.next(response.access);
           observer.next(response.access);
